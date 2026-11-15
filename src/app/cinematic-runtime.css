@@ -1,0 +1,134 @@
+.cine-route-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cine-section-rail {
+  position: fixed;
+  z-index: 52;
+  top: 50%;
+  left: 18px;
+  display: grid;
+  width: 28px;
+  justify-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,.66);
+  pointer-events: none;
+  transform: translateY(-38%);
+  mix-blend-mode: difference;
+}
+
+.cine-section-rail > span {
+  display: flex;
+  align-items: baseline;
+  font: 700 8px/1 var(--font-mono);
+  letter-spacing: .08em;
+  writing-mode: vertical-rl;
+}
+
+.cine-section-rail > span small { color: rgba(255,255,255,.36); font-size: 6px; font-weight: 500; }
+.cine-section-rail > i { position: relative; display: block; width: 1px; height: 84px; overflow: hidden; background: rgba(255,255,255,.22); }
+.cine-section-rail > i b { position: absolute; inset: 0; display: block; background: #ed1c24; transform: scaleY(0); transform-origin: top center; }
+.cine-section-rail > p {
+  width: 150px;
+  margin: 48px 0 0;
+  overflow: hidden;
+  color: rgba(255,255,255,.42);
+  font: 600 6px/1.4 var(--font-mono);
+  letter-spacing: .16em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: rotate(-90deg);
+}
+
+.cine-route-transition i,
+.cine-route-transition b {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.cine-route-transition i { background: #ed1c24; }
+.cine-route-transition b { background: #070707; }
+
+body[data-route-state="enter"] .cine-route-transition i {
+  animation: cine-route-signal 680ms cubic-bezier(.76, 0, .24, 1) both;
+}
+
+body[data-route-state="enter"] .cine-route-transition b {
+  animation: cine-route-carbon 680ms cubic-bezier(.76, 0, .24, 1) both;
+}
+
+@keyframes cine-route-signal {
+  0% { transform: scaleX(1); transform-origin: right center; }
+  58% { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
+
+@keyframes cine-route-carbon {
+  0% { transform: scaleX(1); transform-origin: right center; }
+  44% { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
+
+[data-reactive] {
+  --reactive-x: 50%;
+  --reactive-y: 50%;
+  --reactive-nx: 0;
+  --reactive-ny: 0;
+}
+
+[data-reactive]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(420px circle at var(--reactive-x) var(--reactive-y), rgba(237,28,36,.15), transparent 64%);
+  transition: opacity 220ms ease-out;
+}
+
+[data-reactive]:hover::after,
+[data-reactive]:focus-within::after { opacity: 1; }
+[data-cine-depth] {
+  transform: translate3d(0, calc((var(--cine-progress, .5) - .5) * var(--cine-depth, -36px)), 0);
+  will-change: transform;
+}
+
+body[data-cine-paused="true"] main *,
+body[data-cine-paused="true"] main *::before,
+body[data-cine-paused="true"] main *::after { animation-play-state: paused !important; }
+
+/* Sections outside the runtime activation band retain their composed frame
+   without spending animation work. Visibility and reduced-motion gates below
+   remain authoritative when the whole document should stop moving. */
+[data-cinematic-section][data-cine-state="idle"] *,
+[data-cinematic-section][data-cine-state="idle"] *::before,
+[data-cinematic-section][data-cine-state="idle"] *::after { animation-play-state: paused !important; }
+
+@media (pointer: coarse), (max-width: 680px) {
+  [data-cine-depth] { transform: none; }
+  .cine-section-rail { display: none; }
+}
+
+@media (max-width: 1180px) { .cine-section-rail { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-route-transition { display: none; }
+  .cine-section-rail { display: none; }
+  [data-cine-depth] { transform: none; }
+  [data-reactive]::after { transition: none; }
+  [data-cinematic-section] *,
+  [data-cinematic-section] *::before,
+  [data-cinematic-section] *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

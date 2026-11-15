@@ -1,0 +1,1394 @@
+.river {
+  --river-primary: #0068ad;
+  --river-secondary: #ffb94d;
+  --river-ink: #071b2b;
+  --river-tint: #edf7ff;
+  --river-network: #ed1c24;
+  --river-positive: #08775a;
+  --river-caution: #a86200;
+  --river-progress: 0;
+  --demand-progress: 0;
+  --match-progress: 0;
+  --branch-progress: 0;
+  --settlement-progress: 0;
+  --demand-scale: .72;
+  --match-scale: .72;
+  --branch-scale: .72;
+  --settlement-scale: .72;
+  --river-shift: 7px;
+  position: relative;
+  height: 245svh;
+  min-height: 1680px;
+  overflow: hidden;
+  overflow: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 68% 42%, color-mix(in srgb, var(--river-primary) 22%, transparent), transparent 36%),
+    radial-gradient(circle at 32% 78%, color-mix(in srgb, var(--river-network) 13%, transparent), transparent 34%),
+    linear-gradient(145deg, #020609 0%, color-mix(in srgb, var(--river-ink) 82%, #020406) 54%, #020406 100%);
+  color: #f7fbff;
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+
+.river,
+.river * {
+  box-sizing: border-box;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 690px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(16px, 2vh, 28px);
+  padding: clamp(20px, 2.6vw, 46px) clamp(22px, 3.7vw, 66px) clamp(18px, 2.2vw, 38px);
+  overflow: hidden;
+  background:
+    radial-gradient(580px circle at 62% 46%, color-mix(in srgb, var(--river-primary) 16%, transparent), transparent 68%),
+    linear-gradient(180deg, rgba(1, 5, 8, .16), rgba(1, 4, 7, .76));
+}
+
+.sticky::before,
+.sticky::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.sticky::before {
+  z-index: -2;
+  inset: 0;
+  opacity: .34;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 55% 52%, #000 0%, transparent 76%);
+}
+
+.sticky::after {
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 49.92%, rgba(255, 255, 255, .045) 50%, transparent 50.08%),
+    linear-gradient(180deg, rgba(255, 255, 255, .025), transparent 20%, transparent 80%, rgba(255, 255, 255, .025));
+}
+
+.ambient {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ambient span {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, .055);
+  border-radius: 50%;
+  opacity: .52;
+}
+
+.ambient span:nth-child(1) {
+  top: 6%;
+  left: 40%;
+  width: min(42vw, 640px);
+  aspect-ratio: 1;
+}
+
+.ambient span:nth-child(2) {
+  top: 18%;
+  left: 47%;
+  width: min(30vw, 460px);
+  aspect-ratio: 1;
+  border-color: color-mix(in srgb, var(--river-primary) 20%, transparent);
+}
+
+.ambient span:nth-child(3) {
+  right: -9%;
+  bottom: -25%;
+  width: min(44vw, 680px);
+  aspect-ratio: 1;
+  border-color: color-mix(in srgb, var(--river-network) 18%, transparent);
+}
+
+.topRail,
+.bottomRail {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.topRail {
+  min-height: 56px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+.tenantLockup,
+.assurance {
+  display: flex;
+  align-items: center;
+}
+
+.tenantLockup {
+  gap: 14px;
+}
+
+.logoFrame {
+  width: clamp(116px, 11vw, 164px);
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: #fff;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, .32);
+}
+
+.logoFrame img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.tenantLockup > span:last-child,
+.assurance > span {
+  display: grid;
+  gap: 5px;
+}
+
+.tenantLockup strong,
+.assurance strong {
+  font-size: 10px;
+  line-height: 1.15;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.tenantLockup small,
+.assurance small {
+  color: rgba(224, 235, 244, .6);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.assurance {
+  gap: 12px;
+  text-align: right;
+}
+
+.assurance > i {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border: 1px solid color-mix(in srgb, var(--river-positive) 72%, #fff);
+  border-radius: 50%;
+}
+
+.assurance > i::before,
+.assurance > i::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in srgb, var(--river-positive) 70%, #fff);
+}
+
+.assurance > i::before {
+  top: 12px;
+  left: 7px;
+  width: 6px;
+  height: 1px;
+  rotate: 45deg;
+}
+
+.assurance > i::after {
+  top: 10px;
+  left: 11px;
+  width: 9px;
+  height: 1px;
+  rotate: -48deg;
+}
+
+.stage {
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(185px, .63fr) minmax(0, 1.78fr) minmax(245px, .78fr);
+  align-items: center;
+  gap: clamp(20px, 2.6vw, 50px);
+}
+
+.intro {
+  position: relative;
+  z-index: 3;
+  align-self: center;
+}
+
+.intro > p:first-child {
+  margin: 0;
+  color: color-mix(in srgb, var(--river-secondary) 76%, #fff);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.intro h2 {
+  max-width: 410px;
+  margin: 18px 0 20px;
+  font-size: clamp(34px, 3.35vw, 62px);
+  line-height: .98;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+
+.introCopy {
+  max-width: 370px;
+  margin: 0;
+  color: rgba(224, 235, 244, .68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.progressRail {
+  position: relative;
+  margin-top: clamp(24px, 3.2vh, 44px);
+  display: grid;
+  grid-template-columns: 2px 1fr;
+  gap: 17px;
+}
+
+.progressRail > i {
+  position: relative;
+  width: 1px;
+  height: 174px;
+  margin-left: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .14);
+}
+
+.progressRail > i > span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--river-secondary), var(--river-primary), var(--river-network));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--river-primary) 62%, transparent);
+  transform: scaleY(var(--river-progress));
+  transform-origin: top;
+  will-change: transform;
+}
+
+.progressRail ol {
+  height: 174px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.progressRail li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 8px;
+  color: rgba(224, 235, 244, .34);
+  transition: color 220ms ease, transform 220ms ease;
+}
+
+.progressRail li > span {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.progressRail li > small {
+  font-size: 9px;
+  line-height: 1.25;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.river[data-act="0"] [data-river-marker="0"],
+.river[data-act="1"] [data-river-marker="1"],
+.river[data-act="2"] [data-river-marker="2"],
+.river[data-act="3"] [data-river-marker="3"] {
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.figure {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  perspective: 1500px;
+}
+
+.figure figcaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.diagramFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .13);
+  background:
+    radial-gradient(circle at 60% 44%, color-mix(in srgb, var(--river-primary) 15%, transparent), transparent 35%),
+    linear-gradient(150deg, rgba(11, 28, 41, .82), rgba(2, 8, 12, .76));
+  box-shadow:
+    0 38px 100px rgba(0, 0, 0, .42),
+    inset 0 1px rgba(255, 255, 255, .08);
+  transform:
+    perspective(1500px)
+    translate3d(0, var(--river-shift), 0);
+  will-change: transform;
+}
+
+.diagramFrame::before,
+.diagramFrame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.diagramFrame::before {
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, .38);
+}
+
+.diagramFrame::after {
+  top: 0;
+  bottom: 0;
+  left: -25%;
+  width: 32%;
+  opacity: .28;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .15), transparent);
+  transform: translateX(var(--river-shift));
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  color: rgba(255, 255, 255, .12);
+}
+
+.svgGrid {
+  opacity: .24;
+}
+
+.coordinates path {
+  fill: none;
+  stroke: rgba(255, 255, 255, .12);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.coordinates text,
+.svgSubLabel,
+.nodeDetail,
+.outputDetail {
+  fill: rgba(222, 234, 243, .48);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.basePaths path,
+.demandFlow path,
+.branchFlow path,
+.mergeFlow path,
+.settlementFlow path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.basePaths path {
+  stroke: rgba(208, 227, 240, .13);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 8;
+}
+
+.demandFlow path,
+.branchFlow path,
+.mergeFlow path,
+.settlementFlow path {
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  will-change: stroke-dashoffset;
+}
+
+.demandFlow path {
+  stroke-dashoffset: calc(1 - var(--demand-progress));
+}
+
+.branchFlow path:not(:first-child) {
+  stroke-dashoffset: calc(1 - var(--branch-progress));
+}
+
+.branchFlow path:first-child {
+  stroke-dashoffset: calc(1 - var(--match-progress));
+}
+
+.mergeFlow path,
+.settlementFlow path {
+  stroke-dashoffset: calc(1 - var(--settlement-progress));
+}
+
+.demandNode > circle:first-child {
+  fill: color-mix(in srgb, var(--river-primary) 12%, #041018);
+  stroke: color-mix(in srgb, var(--river-primary) 72%, #fff);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.demandNode text {
+  fill: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.nodePulse {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  opacity: .62;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: riverResolvePulse 760ms cubic-bezier(.16, 1, .3, 1) 1 both;
+  animation-play-state: paused;
+}
+
+.demandNodes {
+  color: var(--river-primary);
+}
+
+.demandNode {
+  opacity: var(--demand-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--demand-scale));
+}
+
+.partsGopherNode {
+  opacity: var(--match-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--match-scale));
+}
+
+.partsGopherNode > circle:not(.orbitOuter, .orbitInner) {
+  pointer-events: none;
+}
+
+.orbitOuter,
+.orbitInner {
+  fill: none;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: riverResolveOrbit 920ms cubic-bezier(.16, 1, .3, 1) 1 both;
+  animation-play-state: paused;
+}
+
+.orbitOuter {
+  stroke: color-mix(in srgb, var(--river-network) 72%, #fff);
+  stroke-dasharray: 3 8;
+}
+
+.orbitInner {
+  stroke: rgba(255, 255, 255, .38);
+  stroke-dasharray: 1 5;
+  animation-delay: 90ms;
+}
+
+.partsGopherNode > path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--river-network) 64%, #fff);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.nodeKicker,
+.svgLabel,
+.outputValue {
+  fill: #f8fcff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.nodeValue {
+  fill: #fff;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.nodeDetail,
+.outputDetail {
+  font-size: 10px;
+  letter-spacing: 1.1px;
+}
+
+.svgLabel {
+  font-size: 13px;
+}
+
+.svgSubLabel {
+  font-size: 10px;
+  letter-spacing: 1.1px;
+}
+
+.memberNodes {
+  opacity: 1;
+}
+
+.memberNodes > g > circle:first-child {
+  fill: rgba(3, 12, 18, .9);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.memberNodePrimary {
+  color: var(--river-secondary);
+  opacity: var(--match-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--match-scale));
+}
+
+.memberNodePrimary > circle:first-child {
+  stroke: var(--river-secondary);
+  filter: drop-shadow(0 0 15px color-mix(in srgb, var(--river-secondary) 38%, transparent));
+}
+
+.memberNodeSecondary,
+.memberNodeTertiary {
+  color: var(--river-primary);
+  opacity: var(--branch-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--branch-scale));
+}
+
+.memberNodeSecondary > circle:first-child,
+.memberNodeTertiary > circle:first-child {
+  stroke: color-mix(in srgb, var(--river-primary) 70%, #fff);
+}
+
+.settlementNode {
+  color: var(--river-primary);
+  opacity: var(--settlement-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--settlement-scale));
+}
+
+.settlementNode > circle:first-child {
+  fill: color-mix(in srgb, var(--river-primary) 24%, #02070b);
+  stroke: color-mix(in srgb, var(--river-primary) 74%, #fff);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--river-primary) 45%, transparent));
+  vector-effect: non-scaling-stroke;
+}
+
+.settlementNode > path {
+  fill: none;
+  stroke: rgba(255, 255, 255, .58);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.outputNodes {
+  opacity: var(--settlement-progress);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(var(--settlement-scale));
+}
+
+.outputNodes rect {
+  fill: rgba(4, 14, 21, .9);
+  stroke: rgba(255, 255, 255, .25);
+  stroke-width: 1.3;
+  vector-effect: non-scaling-stroke;
+}
+
+.outputNodes > g:first-child rect {
+  stroke: var(--river-secondary);
+}
+
+.outputNodes > g:nth-child(2) rect {
+  stroke: var(--river-primary);
+}
+
+.outputNodes > g:nth-child(3) rect {
+  stroke: var(--river-network);
+}
+
+.outputValue {
+  font-size: 16px;
+}
+
+.particles circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: particleResolve 680ms cubic-bezier(.16, 1, .3, 1) 1 both;
+  animation-play-state: paused;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.particleDemandA,
+.particleDemandB {
+  color: var(--river-primary);
+  fill: var(--river-primary);
+  opacity: var(--demand-progress);
+}
+
+.particleDemandB,
+.particleBranchB,
+.particleSettleB {
+  animation-delay: 100ms;
+}
+
+.particleBranchA,
+.particleBranchB,
+.particleBranchC {
+  color: var(--river-secondary);
+  fill: var(--river-secondary);
+  opacity: var(--branch-progress);
+}
+
+.particleSettleA,
+.particleSettleB,
+.particleSettleC {
+  color: var(--river-primary);
+  fill: var(--river-primary);
+  opacity: var(--settlement-progress);
+}
+
+.river[data-near="true"] .nodePulse,
+.river[data-near="true"] .orbitOuter,
+.river[data-near="true"] .orbitInner,
+.river[data-near="true"] .particles circle {
+  animation-play-state: running;
+}
+
+.acts {
+  position: relative;
+  min-width: 0;
+  min-height: 430px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.act {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity 260ms ease, transform 360ms cubic-bezier(.2, .78, .2, 1);
+  pointer-events: none;
+}
+
+.river[data-act="0"] .act[data-river-act="0"],
+.river[data-act="1"] .act[data-river-act="1"],
+.river[data-act="2"] .act[data-river-act="2"],
+.river[data-act="3"] .act[data-river-act="3"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.actHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.actHeading > span {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--river-primary) 60%, #fff);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.actHeading > p {
+  margin: 0;
+  color: color-mix(in srgb, var(--river-secondary) 74%, #fff);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.act h3 {
+  margin: 22px 0 16px;
+  font-size: clamp(25px, 2.15vw, 38px);
+  line-height: 1.03;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+.act > p {
+  margin: 0;
+  color: rgba(224, 235, 244, .68);
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.act dl {
+  margin: 24px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.act dl > div {
+  position: relative;
+  min-height: 76px;
+  padding: 12px 13px 11px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, .11);
+  background: linear-gradient(120deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .012));
+  box-shadow: inset 0 1px rgba(255, 255, 255, .03);
+}
+
+.act dl > div::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: linear-gradient(var(--river-secondary), var(--river-primary));
+}
+
+.act dt {
+  color: rgba(224, 235, 244, .6);
+  font-size: 9px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.act dd {
+  grid-row: span 2;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(18px, 1.6vw, 28px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.045em;
+  font-variant-numeric: tabular-nums;
+}
+
+.act dl small {
+  color: rgba(224, 235, 244, .38);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.bottomRail {
+  min-height: 34px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  color: rgba(224, 235, 244, .45);
+  font-size: 9px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.bottomRail span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bottomRail i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--river-secondary);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--river-secondary) 70%, transparent);
+}
+
+@keyframes riverResolvePulse {
+  0% { opacity: .2; transform: scale(.82); }
+  58% { opacity: .82; transform: scale(1.1); }
+  100% { opacity: .58; transform: scale(1); }
+}
+
+@keyframes riverResolveOrbit {
+  from { opacity: .24; rotate: -20deg; }
+  to { opacity: 1; rotate: 0deg; }
+}
+
+@keyframes particleResolve {
+  0% { transform: scale(.66); }
+  62% { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+@media (min-width: 981px) and (max-height: 820px) {
+  .sticky {
+    min-height: 100svh;
+    gap: 10px;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  .topRail {
+    min-height: 46px;
+    padding-bottom: 9px;
+  }
+
+  .stage {
+    gap: clamp(16px, 2vw, 34px);
+  }
+
+  .intro h2 {
+    margin: 11px 0 12px;
+    font-size: clamp(31px, 3vw, 50px);
+  }
+
+  .introCopy,
+  .act > p {
+    font-size: 12px;
+    line-height: 1.46;
+  }
+
+  .progressRail {
+    margin-top: 15px;
+  }
+
+  .progressRail > i,
+  .progressRail ol {
+    height: 142px;
+  }
+
+  .acts {
+    min-height: 388px;
+  }
+
+  .actHeading > span {
+    width: 33px;
+    height: 33px;
+  }
+
+  .act h3 {
+    margin: 14px 0 10px;
+    font-size: clamp(23px, 1.9vw, 32px);
+  }
+
+  .act dl {
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  .act dl > div {
+    min-height: 58px;
+    padding: 8px 10px;
+  }
+
+  .act dd {
+    font-size: clamp(17px, 1.35vw, 23px);
+  }
+
+  .bottomRail {
+    min-height: 27px;
+    padding-top: 7px;
+  }
+}
+
+@media (max-width: 1260px) {
+  .sticky {
+    padding-inline: 30px;
+  }
+
+  .stage {
+    grid-template-columns: minmax(172px, .58fr) minmax(0, 1.62fr) minmax(226px, .72fr);
+    gap: 24px;
+  }
+
+  .intro h2 {
+    font-size: clamp(32px, 3vw, 50px);
+  }
+
+  .act h3 {
+    font-size: clamp(24px, 2vw, 32px);
+  }
+}
+
+@media (max-width: 980px) {
+  .river {
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .sticky {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    gap: 36px;
+    padding: 32px 24px 42px;
+    overflow: visible;
+  }
+
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 36px;
+  }
+
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, .72fr);
+    column-gap: 40px;
+    align-items: end;
+  }
+
+  .intro > p:first-child,
+  .intro h2 {
+    grid-column: 1;
+  }
+
+  .introCopy {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: end;
+  }
+
+  .intro h2 {
+    max-width: 610px;
+    margin-bottom: 0;
+    font-size: clamp(42px, 7vw, 72px);
+  }
+
+  .progressRail {
+    display: none;
+  }
+
+  .figure {
+    width: min(100%, 920px);
+    margin-inline: auto;
+  }
+
+  .diagramFrame {
+    transform: none;
+  }
+
+  .acts {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .act,
+  .river[data-act="0"] .act[data-river-act="0"],
+  .river[data-act="1"] .act[data-river-act="1"],
+  .river[data-act="2"] .act[data-river-act="2"],
+  .river[data-act="3"] .act[data-river-act="3"] {
+    position: relative;
+    inset: auto;
+    min-height: 390px;
+    justify-content: flex-start;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: linear-gradient(145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .018));
+    opacity: 1;
+    transform: none;
+  }
+
+  .act > p {
+    min-height: 68px;
+  }
+
+  .act dl {
+    margin-top: auto;
+    padding-top: 22px;
+  }
+
+  .river .demandFlow path,
+  .river .branchFlow path,
+  .river .mergeFlow path,
+  .river .settlementFlow path {
+    stroke-dashoffset: 0;
+  }
+
+  .demandNode,
+  .partsGopherNode,
+  .memberNodes,
+  .memberNodePrimary,
+  .memberNodeSecondary,
+  .memberNodeTertiary,
+  .settlementNode,
+  .outputNodes,
+  .particles circle {
+    opacity: 1;
+    transform: none;
+  }
+
+  .bottomRail {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 680px) {
+  .sticky {
+    gap: 28px;
+    padding: 24px 16px 34px;
+  }
+
+  .topRail {
+    align-items: flex-start;
+  }
+
+  .tenantLockup {
+    align-items: flex-start;
+  }
+
+  .tenantLockup > span:last-child {
+    display: none;
+  }
+
+  .assurance {
+    max-width: 180px;
+  }
+
+  .assurance strong,
+  .assurance small {
+    font-size: 9px;
+  }
+
+  .intro {
+    display: block;
+  }
+
+  .intro h2 {
+    margin: 17px 0 18px;
+    font-size: clamp(40px, 13vw, 62px);
+  }
+
+  .introCopy {
+    max-width: 560px;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .diagramFrame {
+    border-color: rgba(255, 255, 255, .17);
+  }
+
+  .coordinates,
+  .svgSubLabel {
+    display: none;
+  }
+
+  .acts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .act,
+  .river[data-act="0"] .act[data-river-act="0"],
+  .river[data-act="1"] .act[data-river-act="1"],
+  .river[data-act="2"] .act[data-river-act="2"],
+  .river[data-act="3"] .act[data-river-act="3"] {
+    min-height: 0;
+    padding: 24px 20px;
+  }
+
+  .act h3 {
+    font-size: 31px;
+  }
+
+  .act > p {
+    min-height: 0;
+    font-size: 16px;
+  }
+
+  .act dl {
+    margin-top: 22px;
+    padding-top: 0;
+  }
+
+  .act dd {
+    font-size: 22px;
+  }
+
+  .bottomRail span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .logoFrame {
+    width: 112px;
+  }
+
+  .assurance > i {
+    display: none;
+  }
+
+  .assurance {
+    max-width: 156px;
+  }
+
+  .diagramFrame {
+    margin-inline: -8px;
+    width: calc(100% + 16px);
+  }
+
+  .svgLabel,
+  .nodeDetail,
+  .outputDetail {
+    display: none;
+  }
+
+  .bottomRail {
+    display: grid;
+    justify-content: start;
+  }
+}
+
+.river[data-reduced="true"] {
+  height: auto;
+  min-height: 0;
+}
+
+.river[data-reduced="true"] .sticky {
+  position: relative;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.river[data-reduced="true"] .stage {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 36px;
+}
+
+.river[data-reduced="true"] .diagramFrame {
+  transform: none;
+}
+
+.river[data-reduced="true"] .acts {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.river[data-reduced="true"] .act,
+.river[data-reduced="true"][data-act="0"] .act[data-river-act="0"],
+.river[data-reduced="true"][data-act="1"] .act[data-river-act="1"],
+.river[data-reduced="true"][data-act="2"] .act[data-river-act="2"],
+.river[data-reduced="true"][data-act="3"] .act[data-river-act="3"] {
+  position: relative;
+  inset: auto;
+  min-height: 0;
+  justify-content: flex-start;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  opacity: 1;
+  transform: none;
+}
+
+.river[data-reduced="true"] .act > p {
+  min-height: 90px;
+}
+
+.river[data-reduced="true"] .act dl {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.river[data-reduced="true"] .demandFlow path,
+.river[data-reduced="true"] .branchFlow path,
+.river[data-reduced="true"] .mergeFlow path,
+.river[data-reduced="true"] .settlementFlow path {
+  stroke-dashoffset: 0;
+}
+
+.river[data-reduced="true"] .demandNode,
+.river[data-reduced="true"] .partsGopherNode,
+.river[data-reduced="true"] .memberNodes,
+.river[data-reduced="true"] .memberNodePrimary,
+.river[data-reduced="true"] .memberNodeSecondary,
+.river[data-reduced="true"] .memberNodeTertiary,
+.river[data-reduced="true"] .settlementNode,
+.river[data-reduced="true"] .outputNodes,
+.river[data-reduced="true"] .particles circle {
+  opacity: 1;
+  transform: none;
+}
+
+.river[data-reduced="true"] .nodePulse,
+.river[data-reduced="true"] .orbitOuter,
+.river[data-reduced="true"] .orbitInner,
+.river[data-reduced="true"] .particles circle {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .river {
+    height: auto;
+    min-height: 0;
+  }
+
+  .river *,
+  .river *::before,
+  .river *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .sticky {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 36px;
+  }
+
+  .diagramFrame {
+    transform: none;
+  }
+
+  .acts {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .act,
+  .river[data-act="0"] .act[data-river-act="0"],
+  .river[data-act="1"] .act[data-river-act="1"],
+  .river[data-act="2"] .act[data-river-act="2"],
+  .river[data-act="3"] .act[data-river-act="3"] {
+    position: relative;
+    inset: auto;
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    opacity: 1;
+    transform: none;
+  }
+
+  .act > p {
+    min-height: 90px;
+  }
+
+  .act dl {
+    margin-top: auto;
+    padding-top: 18px;
+  }
+
+  .river .demandFlow path,
+  .river .branchFlow path,
+  .river .mergeFlow path,
+  .river .settlementFlow path {
+    stroke-dashoffset: 0;
+  }
+
+  .demandNode,
+  .partsGopherNode,
+  .memberNodes,
+  .memberNodePrimary,
+  .memberNodeSecondary,
+  .memberNodeTertiary,
+  .settlementNode,
+  .outputNodes,
+  .particles circle {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 980px) {
+  .acts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 680px) {
+  .acts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .act > p {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 980px) {
+  .river[data-reduced="true"] .acts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .river[data-reduced="true"] .acts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .river[data-reduced="true"] .act > p {
+    min-height: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .river {
+    border-block: 1px solid CanvasText;
+  }
+
+  .diagramFrame,
+  .act dl > div,
+  .act {
+    border-color: CanvasText;
+  }
+}

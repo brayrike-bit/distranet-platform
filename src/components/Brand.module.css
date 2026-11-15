@@ -1,0 +1,30 @@
+.mark {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  line-height: 0;
+}
+
+.lockup {
+  display: block;
+  width: clamp(154px, 13vw, 192px);
+  height: auto;
+}
+
+.glyph {
+  display: block;
+  width: 42px;
+  height: 42px;
+}
+
+@media (max-width: 680px) {
+  .lockup {
+    width: 144px;
+  }
+
+  .glyph {
+    width: 36px;
+    height: 36px;
+  }
+}

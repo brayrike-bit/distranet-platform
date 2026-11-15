@@ -1,0 +1,567 @@
+.page {
+  min-height: 100vh;
+  overflow: clip;
+  outline: none;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-public-sans, "Funnel Sans"), sans-serif;
+}
+
+.thesis,
+.operating,
+.ownership,
+.evidence,
+.routeIndex {
+  position: relative;
+  min-height: 108svh;
+  padding: clamp(116px, 15vh, 208px) 7vw;
+  color: #fff;
+}
+
+.thesis {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, .66fr);
+  gap: 8vw;
+  align-content: center;
+}
+
+.thesis::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 7vw;
+  width: 3px;
+  height: 28vh;
+  background: linear-gradient(#ed1c24, transparent);
+}
+
+.thesis > p,
+.operating header > p,
+.ownershipStatement > p,
+.evidence header > p,
+.routeIndex header > p {
+  margin: 0;
+  color: #ff3940;
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.thesis > p {
+  grid-column: 1 / -1;
+  margin-bottom: 42px;
+}
+
+.thesis h2,
+.operating h2,
+.ownership h2,
+.evidence h2,
+.routeIndex h2 {
+  margin: 0;
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-weight: var(--font-public-display-weight, 680);
+  letter-spacing: var(--font-public-display-tracking, -.018em);
+  line-height: .95;
+  text-wrap: balance;
+}
+
+.thesis h2 {
+  grid-column: 1;
+  max-width: 1100px;
+  font-size: clamp(58px, 7vw, 122px);
+}
+
+.thesis h2 em {
+  display: block;
+  margin-top: .18em;
+  color: #ff3138;
+  font-style: normal;
+}
+
+.thesisCopy {
+  grid-column: 2;
+  align-self: end;
+  padding-bottom: 1.1vw;
+}
+
+.thesisCopy > p {
+  margin: 0;
+  color: rgba(255, 255, 255, .84);
+  font-size: 19px;
+  line-height: 1.64;
+}
+
+.thesisCopy blockquote {
+  margin: 34px 0 0;
+  padding: 24px 0 0;
+  border-top: 3px solid #ed1c24;
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-size: clamp(25px, 2.1vw, 37px);
+  font-weight: 690;
+  line-height: 1.15;
+}
+
+.operating {
+  min-height: 126svh;
+}
+
+.operating header,
+.evidence header,
+.routeIndex header {
+  display: grid;
+  grid-template-columns: minmax(210px, .48fr) minmax(0, 1.52fr);
+  gap: 7vw;
+  align-items: end;
+}
+
+.operating h2 {
+  max-width: 1180px;
+  font-size: clamp(52px, 6.2vw, 108px);
+}
+
+.spine {
+  margin: 12vh 0 0;
+  padding: 0;
+  border-top: 2px solid rgba(255, 255, 255, .84);
+  list-style: none;
+}
+
+.spine li {
+  display: grid;
+  min-height: 186px;
+  grid-template-columns: 80px minmax(250px, .8fr) minmax(300px, 1.2fr) 58px;
+  gap: 28px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, .32);
+}
+
+.spine > li > span {
+  color: #ff3940;
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: .12em;
+}
+
+.spine small {
+  color: #ff555a;
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .12em;
+}
+
+.spine h3 {
+  margin: 15px 0 0;
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-size: clamp(32px, 3.2vw, 54px);
+  font-weight: 700;
+  line-height: .98;
+}
+
+.spine p {
+  max-width: 660px;
+  margin: 0;
+  color: rgba(255, 255, 255, .77);
+  font-size: 17px;
+  line-height: 1.58;
+}
+
+.spine a {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .7);
+  color: #fff;
+  font-size: 19px;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.spine a:hover,
+.spine a:focus-visible {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+  outline: none;
+}
+
+.spine a:focus-visible {
+  outline: 3px solid #ed1c24;
+  outline-offset: 5px;
+}
+
+.ownership {
+  min-height: 118svh;
+  align-content: center;
+  overflow: hidden;
+}
+
+.ownershipStatement {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(190px, .4fr) minmax(0, 1.6fr);
+  gap: 7vw;
+  align-items: start;
+}
+
+.ownership h2 {
+  max-width: 1200px;
+  font-size: clamp(58px, 7.1vw, 126px);
+}
+
+.ownershipModel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(160px, .35fr) auto minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  margin-top: 12vh;
+  padding: 38px 0;
+  border-top: 1px solid rgba(255, 255, 255, .76);
+  border-bottom: 1px solid rgba(255, 255, 255, .3);
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-size: clamp(24px, 2.6vw, 46px);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.ownershipModel strong {
+  color: #ff3940;
+  font-size: 1.25em;
+  text-transform: uppercase;
+}
+
+.ownershipModel i {
+  color: #ed1c24;
+  font-style: normal;
+}
+
+.ownershipCopy {
+  position: relative;
+  z-index: 1;
+  max-width: 850px;
+  margin: 54px 0 0 auto;
+  padding-left: 28px;
+  border-left: 3px solid #ed1c24;
+  color: rgba(255, 255, 255, .79);
+  font-size: clamp(18px, 1.6vw, 25px);
+  font-weight: 560;
+  line-height: 1.56;
+}
+
+.evidence {
+  min-height: 116svh;
+}
+
+.evidence h2 {
+  max-width: 1180px;
+  font-size: clamp(48px, 5.6vw, 96px);
+}
+
+.evidence dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(22px, 3vw, 54px);
+  margin: 12vh 0 0;
+}
+
+.evidence dl > div {
+  min-height: 320px;
+  padding: 28px 0;
+  border-top: 2px solid rgba(255, 255, 255, .76);
+}
+
+.evidence dt {
+  color: #ff3940;
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-size: clamp(52px, 6vw, 104px);
+  font-weight: 760;
+  letter-spacing: var(--font-public-display-tracking-tight, -.024em);
+  line-height: .9;
+}
+
+.evidence dd {
+  margin: 100px 0 0;
+}
+
+.evidence dd strong {
+  display: block;
+  font-size: 18px;
+}
+
+.evidence dd span {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, .65);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.evidenceNote {
+  max-width: 910px;
+  margin: 46px 0 0 auto;
+  padding: 24px 0 0;
+  border-top: 3px solid #ed1c24;
+  color: rgba(255, 255, 255, .68);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.routeIndex {
+  min-height: 118svh;
+}
+
+.routeIndex h2 {
+  max-width: 1120px;
+  font-size: clamp(52px, 6vw, 104px);
+}
+
+.routeIndex nav {
+  margin-top: 11vh;
+  border-top: 2px solid rgba(255, 255, 255, .84);
+}
+
+.routeIndex a {
+  display: grid;
+  min-height: 156px;
+  grid-template-columns: 82px minmax(0, 1fr) 60px;
+  gap: 28px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, .3);
+  color: #fff;
+  text-decoration: none;
+}
+
+.routeIndex a > span {
+  color: #ff3940;
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: .12em;
+}
+
+.routeIndex h3 {
+  margin: 0;
+  font-family: var(--font-public-display, "Funnel Display"), sans-serif;
+  font-size: clamp(34px, 4vw, 68px);
+  line-height: 1;
+}
+
+.routeIndex a p {
+  max-width: 700px;
+  margin: 13px 0 0;
+  color: rgba(255, 255, 255, .68);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.routeIndex a b {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .72);
+  font-size: 19px;
+}
+
+.routeIndex a:hover b,
+.routeIndex a:focus-visible b {
+  border-color: #ed1c24;
+  background: #ed1c24;
+}
+
+.routeIndex a:focus-visible {
+  outline: 3px solid #ed1c24;
+  outline-offset: 5px;
+}
+
+@supports (animation-timeline: view()) {
+  .thesisCopy,
+  .spine li,
+  .ownershipModel,
+  .ownershipCopy,
+  .evidence dl > div,
+  .routeIndex a {
+    animation: home-flow linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 32%;
+  }
+
+  @keyframes home-flow {
+    from { opacity: .12; transform: translateY(48px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+}
+
+@media (max-width: 1000px) {
+  .evidence dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .evidence dl > div {
+    min-height: 260px;
+  }
+
+  .evidence dd {
+    margin-top: 64px;
+  }
+}
+
+@media (max-width: 900px) {
+  .thesis,
+  .operating header,
+  .ownershipStatement,
+  .evidence header,
+  .routeIndex header {
+    grid-template-columns: 1fr;
+  }
+
+  .thesis h2,
+  .thesisCopy {
+    grid-column: 1;
+  }
+
+  .thesisCopy {
+    max-width: 700px;
+    margin-top: 55px;
+  }
+
+  .operating h2,
+  .ownership h2,
+  .evidence h2,
+  .routeIndex h2 {
+    margin-top: 28px;
+  }
+
+  .spine li {
+    grid-template-columns: 58px minmax(210px, .8fr) minmax(240px, 1.2fr) 54px;
+  }
+
+  .ownershipModel {
+    grid-template-columns: 1fr;
+  }
+
+  .ownershipModel i {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .thesis,
+  .operating,
+  .ownership,
+  .evidence,
+  .routeIndex {
+    min-height: 92svh;
+    padding: 108px 7vw;
+  }
+
+  .thesis h2,
+  .operating h2,
+  .ownership h2,
+  .evidence h2,
+  .routeIndex h2 {
+    font-size: clamp(46px, 13vw, 68px);
+  }
+
+  .thesisCopy > p {
+    font-size: 17px;
+  }
+
+  .spine {
+    margin-top: 68px;
+  }
+
+  .spine li {
+    grid-template-columns: 42px 1fr 50px;
+    gap: 14px;
+    padding: 28px 0;
+  }
+
+  .spine li > p {
+    grid-column: 2 / -1;
+    font-size: 15px;
+  }
+
+  .spine h3 {
+    font-size: 34px;
+  }
+
+  .spine a {
+    grid-column: 3;
+    grid-row: 1;
+    width: 48px;
+    height: 48px;
+  }
+
+  .ownershipModel {
+    margin-top: 70px;
+    font-size: 28px;
+  }
+
+  .ownershipCopy {
+    margin-top: 40px;
+    font-size: 17px;
+  }
+
+  .evidence dl {
+    grid-template-columns: 1fr;
+    margin-top: 68px;
+  }
+
+  .evidence dl > div {
+    min-height: 210px;
+  }
+
+  .evidence dt {
+    font-size: 64px;
+  }
+
+  .evidence dd {
+    margin-top: 46px;
+  }
+
+  .routeIndex nav {
+    margin-top: 68px;
+  }
+
+  .routeIndex a {
+    min-height: 150px;
+    grid-template-columns: 42px 1fr 50px;
+    gap: 12px;
+  }
+
+  .routeIndex h3 {
+    font-size: 32px;
+  }
+
+  .routeIndex a p {
+    font-size: 14px;
+  }
+
+  .routeIndex a b {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thesisCopy,
+  .spine li,
+  .ownershipModel,
+  .ownershipCopy,
+  .evidence dl > div,
+  .routeIndex a {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .spine a {
+    transition: none;
+  }
+}

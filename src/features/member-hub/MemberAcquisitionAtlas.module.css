@@ -1,0 +1,639 @@
+.section {
+  margin-top: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  color: #fff;
+  background:
+    radial-gradient(70% 90% at 72% 38%, color-mix(in srgb, var(--tenant-primary) 18%, transparent), transparent 70%),
+    linear-gradient(135deg, color-mix(in srgb, var(--tenant-ink) 92%, #000), #01070b 72%);
+  box-shadow: 0 34px 90px rgba(7, 27, 43, 0.19);
+  scroll-margin-top: 82px;
+}
+
+.heading {
+  display: flex;
+  min-height: 164px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 38px;
+  padding: 32px clamp(24px, 4vw, 62px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.heading p {
+  margin: 0 0 7px;
+  color: var(--tenant-secondary);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  max-width: 780px;
+  margin: 0;
+  font-size: clamp(34px, 4.1vw, 68px);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.instrumentationStatus {
+  display: flex;
+  max-width: 300px;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 17px;
+  border: 1px solid rgba(255, 185, 77, 0.24);
+  border-radius: 9px;
+  background: rgba(255, 185, 77, 0.055);
+}
+
+.instrumentationStatus > i {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border: 1px solid var(--tenant-secondary);
+  border-radius: 50%;
+  box-shadow: 0 0 17px var(--tenant-secondary);
+}
+
+.instrumentationStatus span { display: grid; gap: 2px; }
+.instrumentationStatus strong { font-size: 10px; }
+.instrumentationStatus small { color: rgba(255, 255, 255, 0.48); font-size: 9px; line-height: 1.4; }
+
+.atlas {
+  --atlas-machine-scale: .92;
+  position: relative;
+  display: grid;
+  min-height: 650px;
+  grid-template-columns: minmax(210px, 0.72fr) minmax(430px, 1.7fr) minmax(250px, 0.86fr);
+  align-items: stretch;
+  isolation: isolate;
+  perspective: 1500px;
+  contain: layout paint;
+}
+
+.scanVolume {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 62px 62px;
+}
+
+.scanVolume > i {
+  position: absolute;
+  width: 44vw;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--tenant-primary) 20%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.82);
+  transition: none;
+}
+.scanVolume > i:nth-child(1) { top: -28%; right: 17%; }
+.scanVolume > i:nth-child(2) { top: -12%; right: 8%; width: 30vw; border-style: dashed; }
+.scanVolume > i:nth-child(3) { top: 7%; right: -2%; width: 19vw; }
+
+.atlas[data-atlas-phase="active"] .scanVolume > i {
+  opacity: .62;
+  transform: scale(1);
+  transition:
+    opacity 620ms ease-out calc(620ms + var(--ring-index, 0) * 70ms),
+    transform 720ms cubic-bezier(.16, .8, .22, 1) calc(620ms + var(--ring-index, 0) * 70ms);
+}
+.atlas[data-atlas-phase="active"] .scanVolume > i:nth-child(2) { --ring-index: 1; }
+.atlas[data-atlas-phase="active"] .scanVolume > i:nth-child(3) { --ring-index: 2; }
+.atlas[data-atlas-phase="static"] .scanVolume > i {
+  opacity: .46;
+  transform: none;
+}
+
+.channelRail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 34px 0 34px clamp(20px, 3vw, 50px);
+}
+
+.channelRail button {
+  position: relative;
+  display: grid;
+  min-height: 68px;
+  grid-template-columns: 25px 24px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 9px 0 0 9px;
+  color: rgba(255, 255, 255, 0.53);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0;
+  transform: translate3d(-34px, 0, 0);
+  transition: none;
+}
+
+.channelRail button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -34px;
+  width: 38px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--channel-color));
+  opacity: .7;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.atlas[data-atlas-phase="active"] .channelRail button {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 420ms ease-out calc(80ms + var(--channel-index) * 72ms),
+    transform 520ms cubic-bezier(.2, .78, .18, 1) calc(80ms + var(--channel-index) * 72ms),
+    color 180ms ease-out,
+    background-color 180ms ease-out,
+    border-color 180ms ease-out;
+}
+
+.atlas[data-atlas-phase="active"] .channelRail button::before {
+  transform: scaleX(1);
+  transition: transform 460ms ease-out calc(140ms + var(--channel-index) * 72ms);
+}
+
+.atlas[data-atlas-phase="static"] .channelRail button {
+  opacity: 1;
+  transform: none;
+}
+
+.atlas[data-atlas-phase="static"] .channelRail button::before {
+  transform: scaleX(1);
+}
+
+.atlas[data-atlas-phase="active"] .channelRail button:hover,
+.atlas[data-atlas-phase="static"] .channelRail button:hover {
+  color: #fff;
+  transform: translate3d(4px, 0, 0);
+}
+
+.channelRail button:focus-visible {
+  color: #fff;
+  outline: 3px solid color-mix(in srgb, var(--channel-color) 72%, #fff);
+  outline-offset: 3px;
+}
+.channelRail button[aria-pressed="true"] {
+  color: #fff;
+  border-color: color-mix(in srgb, var(--channel-color) 28%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--channel-color) 16%, transparent), transparent);
+}
+.channelRail button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 0;
+  bottom: 12px;
+  width: 2px;
+  background: var(--channel-color);
+  box-shadow: 0 0 16px var(--channel-color);
+}
+.channelRail button > span { color: rgba(255, 255, 255, 0.26); font-size: 8px; }
+.channelRail button > i {
+  width: 19px;
+  height: 19px;
+  border: 1px solid color-mix(in srgb, var(--channel-color) 70%, #fff);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--channel-color) 0 14%, transparent 18%);
+  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.28);
+}
+.channelRail button > strong { font-size: 11px; }
+.channelRail button > b { color: var(--channel-color); font-size: 17px; letter-spacing: -0.04em; }
+
+.signalMachine {
+  position: relative;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform:
+    translate3d(0, 0, 38px)
+    scale(var(--atlas-machine-scale));
+  transform-style: preserve-3d;
+  transition: none;
+}
+.atlas[data-atlas-phase="active"] {
+  --atlas-machine-scale: 1;
+}
+.atlas[data-atlas-phase="active"] .signalMachine {
+  opacity: 1;
+  transition:
+    transform 720ms cubic-bezier(.16, .8, .22, 1) 430ms,
+    opacity 520ms ease-out 430ms;
+}
+.atlas[data-atlas-phase="static"] {
+  --atlas-machine-scale: 1;
+}
+.atlas[data-atlas-phase="static"] .signalMachine { opacity: 1; }
+.signalMachine svg { display: block; width: 112%; height: auto; overflow: visible; }
+.machineGrid {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1;
+  opacity: 0;
+  transform: scale(.94);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.machineGrid path { stroke-dasharray: 3 8; }
+.passiveBeams { fill: none; stroke-width: 1.4; }
+.passiveBeams path {
+  stroke: var(--route-color, rgba(255, 255, 255, .18));
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: .16;
+  transition: none;
+}
+.passiveBeams path[data-selected="true"] {
+  opacity: .82;
+  stroke-width: 2.3;
+}
+.atlas[data-atlas-phase="active"] .passiveBeams path {
+  stroke-dashoffset: 0;
+  transition:
+    stroke-dashoffset 680ms cubic-bezier(.24, .74, .2, 1) calc(300ms + var(--route-index) * 74ms),
+    opacity 220ms ease-out;
+}
+.atlas[data-atlas-phase="static"] .passiveBeams path { stroke-dashoffset: 0; }
+
+.activeBeam {
+  fill: none;
+  stroke-width: 5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  transition: none;
+}
+.atlas[data-atlas-phase="active"] .activeBeam {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition:
+    stroke-dashoffset 660ms cubic-bezier(.22, .75, .18, 1) 610ms,
+    opacity 260ms ease-out 560ms;
+}
+.atlas[data-atlas-phase="static"] .activeBeam {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+
+.signalPulse {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: .055 .945;
+  opacity: 0;
+}
+.atlas[data-atlas-phase="active"] .signalPulse {
+  animation: atlasSignalPulse 980ms cubic-bezier(.2, .72, .22, 1) 760ms 1 both;
+}
+
+.core {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tenant-primary) 45%, #fff);
+  stroke-width: 1.1;
+  opacity: 0;
+  transform: rotate(-8deg) scale(.72);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: none;
+}
+.core circle:nth-child(2) {
+  stroke-dasharray: 4 9;
+  transform: rotate(calc(var(--active-index) * 18deg));
+  transform-origin: 504px 250px;
+}
+.core circle:nth-child(3) {
+  stroke: var(--tenant-secondary);
+  stroke-dasharray: 2 14;
+  transform: rotate(calc(var(--active-index) * -12deg));
+  transform-origin: 504px 250px;
+}
+.atlas[data-atlas-phase="active"] .machineGrid,
+.atlas[data-atlas-phase="active"] .core {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+  transition:
+    opacity 420ms ease-out 720ms,
+    transform 720ms cubic-bezier(.16, .82, .2, 1) 680ms;
+}
+.atlas[data-atlas-phase="active"] .machineGrid {
+  transform: scale(1);
+  transition-delay: 460ms;
+}
+.atlas[data-atlas-phase="static"] .machineGrid,
+.atlas[data-atlas-phase="static"] .core {
+  opacity: 1;
+  transform: none;
+}
+
+.outputBeam {
+  fill: none;
+  stroke: var(--network-signal);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(237, 28, 36, 0.7));
+  opacity: 0;
+}
+.outputBeam path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.outputBeam circle {
+  fill: var(--network-signal);
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.atlas[data-atlas-phase="active"] .outputBeam {
+  opacity: 1;
+  transition: opacity 220ms ease-out 1.02s;
+}
+.atlas[data-atlas-phase="active"] .outputBeam path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 480ms ease-out 1.02s;
+}
+.atlas[data-atlas-phase="active"] .outputBeam circle {
+  transform: scale(1);
+  transition: transform 360ms cubic-bezier(.18, .8, .24, 1.2) 1.38s;
+}
+.atlas[data-atlas-phase="static"] .outputBeam { opacity: 1; }
+.atlas[data-atlas-phase="static"] .outputBeam path { stroke-dashoffset: 0; }
+.atlas[data-atlas-phase="static"] .outputBeam circle { transform: scale(1); }
+
+.coreLabel {
+  position: absolute;
+  top: 50%;
+  left: 61.5%;
+  display: grid;
+  width: 134px;
+  justify-items: center;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.88);
+  text-align: center;
+  transition: none;
+}
+.coreLabel span { color: rgba(255, 255, 255, 0.5); font-size: 8px; text-transform: uppercase; }
+.coreLabel strong { margin: 3px 0; font-size: 37px; line-height: 1; }
+.coreLabel small { color: var(--tenant-secondary); font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; }
+.atlas[data-atlas-phase="active"] .coreLabel {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    opacity 360ms ease-out 940ms,
+    transform 480ms cubic-bezier(.2, .8, .2, 1) 900ms;
+}
+.atlas[data-atlas-phase="static"] .coreLabel {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+.metricSwap {
+  transition: opacity 220ms ease-out, transform 280ms ease-out;
+}
+@starting-style {
+  .metricSwap {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.outputLabel {
+  position: absolute;
+  top: 50%;
+  right: -4%;
+  display: grid;
+  padding-left: 13px;
+  border-left: 1px solid var(--network-signal);
+  opacity: 0;
+  transform: translate3d(18px, -50%, 0);
+  transition: none;
+}
+.outputLabel span { color: rgba(255, 255, 255, 0.42); font-size: 8px; }
+.outputLabel strong { font-size: 10px; }
+.atlas[data-atlas-phase="active"] .outputLabel {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+  transition:
+    opacity 340ms ease-out 1.28s,
+    transform 440ms cubic-bezier(.2, .8, .2, 1) 1.24s;
+}
+.atlas[data-atlas-phase="static"] .outputLabel {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+
+.readout {
+  position: relative;
+  display: grid;
+  align-self: center;
+  min-height: 330px;
+  margin: 32px clamp(20px, 3vw, 48px) 32px 0;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(3, 12, 19, 0.78);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  opacity: 0;
+  transform:
+    translate3d(22px, 0, 64px)
+    scale(.98);
+  transition: none;
+}
+.atlas[data-atlas-phase="active"] .readout {
+  opacity: 1;
+  transform:
+    translate3d(0, 0, 64px)
+    scale(1);
+  transition:
+    transform 560ms cubic-bezier(.16, .8, .22, 1) 1.08s,
+    opacity 420ms ease-out 1.08s;
+}
+.atlas[data-atlas-phase="static"] .readout {
+  opacity: 1;
+  transform: none;
+}
+
+.readoutContent {
+  grid-area: 1 / 1;
+  min-width: 0;
+  align-self: start;
+}
+.readoutCurrent {
+  z-index: 2;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 220ms ease-out, transform 300ms cubic-bezier(.2, .78, .2, 1);
+}
+.readoutOutgoing {
+  z-index: 1;
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+  pointer-events: none;
+  transition: opacity 180ms ease-out, transform 260ms ease-out;
+}
+@starting-style {
+  .readoutCurrent {
+    opacity: 0;
+    transform: translate3d(0, 9px, 0);
+  }
+  .readoutOutgoing {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.screenReaderStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.readoutContent > span { color: var(--active-channel); font-size: 8px; font-weight: 800; letter-spacing: 0.17em; text-transform: uppercase; }
+.readout h3 { margin: 7px 0 20px; font-size: 28px; letter-spacing: -0.05em; }
+.readout dl { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-block: 1px solid rgba(255, 255, 255, 0.1); }
+.readout dl div { display: grid; gap: 2px; padding: 14px 5px; }
+.readout dt { color: rgba(255, 255, 255, 0.42); font-size: 8px; }
+.readout dd { margin: 0; font-size: 16px; font-weight: 800; }
+.allocationOutcome { display: grid; gap: 3px; margin-top: 17px; padding-left: 11px; border-left: 2px solid var(--active-channel); }
+.allocationOutcome span { color: rgba(255, 255, 255, 0.38); font-size: 7px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.allocationOutcome strong { color: rgba(255, 255, 255, 0.88); font-size: 9px; line-height: 1.45; }
+.readout p { min-height: 62px; margin: 15px 0; color: rgba(255, 255, 255, 0.64); font-size: 11px; line-height: 1.65; }
+.readoutContent > small { color: rgba(255, 255, 255, 0.34); font-size: 8px; }
+
+.measurementRail {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.7fr) 1.8fr;
+  align-items: stretch;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(0, 0, 0, 0.18);
+}
+.measurementRail > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 20px clamp(20px, 3vw, 48px);
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+}
+.measurementRail > div svg { width: 25px; color: var(--tenant-secondary); }
+.measurementRail > div span { display: grid; }
+.measurementRail > div strong { font-size: 10px; }
+.measurementRail > div small { color: rgba(255, 255, 255, 0.42); font-size: 8px; }
+.measurementRail ol { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; list-style: none; }
+.measurementRail li { display: grid; align-content: center; gap: 3px; min-height: 82px; padding: 12px 16px; border-right: 1px solid rgba(255, 255, 255, 0.07); }
+.measurementRail li span { color: var(--tenant-secondary); font-size: 7px; }
+.measurementRail li strong { font-size: 9px; }
+.measurementRail li small { color: rgba(255, 255, 255, 0.37); font-size: 7px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+@keyframes atlasSignalPulse {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  16% { opacity: 1; }
+  78% { opacity: .88; }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -.12;
+  }
+}
+
+@media (max-width: 1180px) {
+  .atlas { grid-template-columns: 220px minmax(420px, 1fr); }
+  .readout { grid-column: 1 / -1; min-height: auto; margin: 0 30px 30px; }
+  .signalMachine { min-height: 480px; }
+  .measurementRail { grid-template-columns: 1fr; }
+  .measurementRail > div { border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.09); }
+}
+
+@media (max-width: 760px) {
+  .heading { display: grid; padding: 28px 22px; }
+  .instrumentationStatus { max-width: none; }
+  .atlas { display: block; min-height: 0; }
+  .channelRail { display: grid; min-width: 0; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 22px; }
+  .channelRail button { min-width: 0; min-height: 62px; grid-template-columns: 18px 18px minmax(0, 1fr) auto; padding: 0 10px; border-radius: 7px; border-color: rgba(255, 255, 255, 0.07); }
+  .channelRail button[aria-pressed="true"]::after { top: auto; right: 10px; bottom: 0; left: 10px; width: auto; height: 2px; }
+  .channelRail button > strong { overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+  .channelRail button > b { font-size: 14px; }
+  .signalMachine { min-height: 390px; overflow: hidden; }
+  .signalMachine svg { width: 140%; transform: translateX(-6%); }
+  .coreLabel { left: 58%; }
+  .outputLabel { right: 3%; }
+  .readout { margin: 0 22px 22px; padding: 22px; transform: none; }
+  .readoutContent { overflow-wrap: anywhere; }
+  .readout dl { grid-template-columns: 1fr 1fr; }
+  .measurementRail ol { grid-template-columns: 1fr; }
+  .measurementRail li { min-height: 58px; grid-template-columns: 26px 1fr auto; align-items: center; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .channelRail button,
+  .channelRail button::before,
+  .signalMachine,
+  .readout,
+  .readoutContent,
+  .scanVolume > i,
+  .machineGrid,
+  .passiveBeams path,
+  .activeBeam,
+  .core,
+  .outputBeam,
+  .outputBeam path,
+  .outputBeam circle,
+  .coreLabel,
+  .outputLabel,
+  .metricSwap {
+    transition: none !important;
+  }
+
+  .channelRail button,
+  .signalMachine,
+  .readout,
+  .scanVolume > i,
+  .machineGrid,
+  .core,
+  .outputBeam,
+  .coreLabel,
+  .outputLabel,
+  .readoutCurrent {
+    opacity: 1;
+    transform: none;
+  }
+
+  .channelRail button::before,
+  .outputBeam circle { transform: scale(1); }
+
+  .passiveBeams path,
+  .activeBeam,
+  .outputBeam path { stroke-dashoffset: 0; }
+
+  .readoutOutgoing { display: none; }
+
+  .signalPulse {
+    opacity: 0;
+    animation: none !important;
+  }
+
+  .activeBeam,
+  .core circle { animation: none !important; }
+}

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 184" width="760" height="184" role="img" aria-label="Distranet Direct film lockup">
+  <defs>
+    <linearGradient id="direct-plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050505" stop-opacity=".99"/>
+      <stop offset=".58" stop-color="#0a0a0a" stop-opacity=".97"/>
+      <stop offset="1" stop-color="#160203" stop-opacity=".98"/>
+    </linearGradient>
+    <linearGradient id="direct-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffd443" stop-opacity=".94"/>
+      <stop offset=".48" stop-color="#ed1c24" stop-opacity=".74"/>
+      <stop offset="1" stop-color="#ed1c24" stop-opacity=".04"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="758" height="182" rx="22" fill="url(#direct-plate)" stroke="#ffffff" stroke-opacity=".22" stroke-width="2"/>
+  <path d="M22 2h486" stroke="url(#direct-edge)" stroke-width="3" stroke-linecap="round"/>
+  <g transform="translate(26,25) scale(.73)">
+    <circle cx="42" cy="42" r="9" fill="#ed1c24"/><circle cx="28" cy="28" r="6.5" fill="#c70f15"/><circle cx="16" cy="16" r="4" fill="#9c0a0f"/>
+    <circle cx="78" cy="42" r="9" fill="#ed1c24"/><circle cx="92" cy="28" r="6.5" fill="#c70f15"/><circle cx="104" cy="16" r="4" fill="#9c0a0f"/>
+    <circle cx="42" cy="78" r="9" fill="#ed1c24"/><circle cx="28" cy="92" r="6.5" fill="#c70f15"/><circle cx="16" cy="104" r="4" fill="#9c0a0f"/>
+    <circle cx="78" cy="78" r="9" fill="#ed1c24"/><circle cx="92" cy="92" r="6.5" fill="#c70f15"/><circle cx="104" cy="104" r="4" fill="#9c0a0f"/>
+    <circle cx="60" cy="32" r="5" fill="#ff8a8a"/><circle cx="60" cy="88" r="5" fill="#ff8a8a"/><circle cx="32" cy="60" r="5" fill="#ff8a8a"/><circle cx="88" cy="60" r="5" fill="#ff8a8a"/>
+    <circle cx="60" cy="60" r="14" fill="#ed1c24"/><circle cx="60" cy="60" r="10.5" fill="none" stroke="#ff4d54" stroke-width="2"/>
+  </g>
+  <text x="132" y="78" font-family="Helvetica Neue,Arial,sans-serif" font-weight="720" font-size="48" letter-spacing="-1.7" fill="#ffffff">DistraNet</text>
+  <text x="367" y="78" font-family="Arial Narrow,Helvetica Neue,Arial,sans-serif" font-weight="900" font-style="italic" font-size="47" letter-spacing="-1" fill="#ffd443">DIRECT</text>
+  <text x="134" y="107" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="12" letter-spacing="2.7" fill="#b8b8bd">PARKER PRODUCTS / NETWORK FULFILLMENT</text>
+  <path d="M132 126h580" stroke="#ffffff" stroke-opacity=".16"/>
+  <text x="134" y="154" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="15" letter-spacing="3.05" fill="#ffffff">FIND</text>
+  <circle cx="220" cy="149" r="3.5" fill="#ed1c24"/>
+  <text x="238" y="154" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="15" letter-spacing="3.05" fill="#ffffff">MATCH</text>
+  <circle cx="349" cy="149" r="3.5" fill="#ed1c24"/>
+  <text x="367" y="154" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="15" letter-spacing="3.05" fill="#ffffff">FULFILL</text>
+</svg>

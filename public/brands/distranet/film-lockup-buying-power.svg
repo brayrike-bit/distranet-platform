@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 184" width="680" height="184" role="img" aria-label="Distranet collective buying power film lockup">
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050505" stop-opacity="0.99"/>
+      <stop offset="0.58" stop-color="#0a0a0a" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#160203" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="0.36" stop-color="#ed1c24" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#ed1c24" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="678" height="182" rx="22" fill="url(#plate)" stroke="#ffffff" stroke-opacity="0.2" stroke-width="2"/>
+  <path d="M22 2h422" stroke="url(#edge)" stroke-width="3" stroke-linecap="round"/>
+  <g transform="translate(28,26) scale(.72)">
+    <circle cx="42" cy="42" r="9" fill="#ed1c24"/><circle cx="28" cy="28" r="6.5" fill="#c70f15"/><circle cx="16" cy="16" r="4" fill="#9c0a0f"/>
+    <circle cx="78" cy="42" r="9" fill="#ed1c24"/><circle cx="92" cy="28" r="6.5" fill="#c70f15"/><circle cx="104" cy="16" r="4" fill="#9c0a0f"/>
+    <circle cx="42" cy="78" r="9" fill="#ed1c24"/><circle cx="28" cy="92" r="6.5" fill="#c70f15"/><circle cx="16" cy="104" r="4" fill="#9c0a0f"/>
+    <circle cx="78" cy="78" r="9" fill="#ed1c24"/><circle cx="92" cy="92" r="6.5" fill="#c70f15"/><circle cx="104" cy="104" r="4" fill="#9c0a0f"/>
+    <circle cx="60" cy="32" r="5" fill="#ff8a8a"/><circle cx="60" cy="88" r="5" fill="#ff8a8a"/><circle cx="32" cy="60" r="5" fill="#ff8a8a"/><circle cx="88" cy="60" r="5" fill="#ff8a8a"/>
+    <circle cx="60" cy="60" r="14" fill="#ed1c24"/><circle cx="60" cy="60" r="10.5" fill="none" stroke="#ff4d54" stroke-width="2"/>
+  </g>
+  <text x="132" y="78" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="48" letter-spacing="-1.5" fill="#ffffff">DistraNet</text>
+  <text x="134" y="107" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="12" letter-spacing="2.55" fill="#b8b8bd">AUTHORIZED PARKER DISTRIBUTOR NETWORK</text>
+  <path d="M132 126h502" stroke="#ffffff" stroke-opacity="0.16"/>
+  <text x="134" y="154" font-family="Helvetica Neue,Arial,sans-serif" font-weight="700" font-size="15" letter-spacing="3.05" fill="#ffffff">COLLECTIVE BUYING POWER</text>
+  <circle cx="442" cy="149" r="3.5" fill="#ed1c24"/>
+  <text x="458" y="154" font-family="Helvetica Neue,Arial,sans-serif" font-weight="500" font-size="13" letter-spacing="1.25" fill="#b8b8bd">INDEPENDENT CONTROL</text>
+</svg>

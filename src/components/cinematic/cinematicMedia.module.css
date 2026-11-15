@@ -1,0 +1,207 @@
+.screenReaderOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.scrubRoot {
+  position: relative;
+  min-height: var(--scrub-span, 320svh);
+  isolation: isolate;
+  background: #000;
+  color: #fff;
+  overflow: clip;
+}
+
+.scrubRoot[data-motion="poster"] {
+  min-height: 100svh;
+}
+
+.stickyFrame {
+  position: sticky;
+  top: var(--scrub-sticky-top, 0px);
+  width: 100%;
+  height: calc(100svh - var(--scrub-sticky-top, 0px));
+  min-height: min(520px, calc(100svh - var(--scrub-sticky-top, 0px)));
+  overflow: hidden;
+  isolation: isolate;
+  contain: paint;
+  background: #000;
+}
+
+.filmMedia,
+.poster img,
+.scrubVideo,
+.opticalGrade,
+.filmOverlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.filmMedia {
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+  contain: paint;
+  background: #000;
+}
+
+.poster {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.filmMedia > .poster {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto !important;
+}
+
+.poster img,
+.scrubVideo {
+  display: block;
+  object-fit: var(--scrub-object-fit, cover);
+  object-position: var(
+    --scrub-object-position,
+    var(--cinematic-focal-point, 50% 50%)
+  );
+}
+
+.poster img {
+  max-width: none;
+}
+
+.scrubVideo {
+  z-index: 1;
+  opacity: 0;
+  background: #000;
+  transition: none;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.scrubRoot[data-video-ready="true"] .scrubVideo {
+  opacity: 1;
+  transition: none;
+}
+.scrubRoot[data-video-ready="true"] .poster { visibility:hidden; }
+.scrubRoot[data-motion="poster"] .poster { visibility:visible; }
+
+.opticalGrade {
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.44),
+      transparent 31%,
+      transparent 72%,
+      rgba(0, 0, 0, 0.2)
+    ),
+    linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.54),
+    transparent 28%,
+    rgba(0, 0, 0, 0.12)
+  );
+}
+
+.filmOverlay {
+  z-index: 3;
+  pointer-events: none;
+}
+
+.filmOverlay > * {
+  pointer-events: auto;
+}
+
+.depthStage {
+  --depth-pointer-x: 0;
+  --depth-pointer-y: 0;
+  --depth-light-x: 50%;
+  --depth-light-y: 50%;
+  position: relative;
+  isolation: isolate;
+  perspective: var(--depth-perspective, 1400px);
+  perspective-origin: var(--depth-light-x) var(--depth-light-y);
+  transform-style: preserve-3d;
+  contain: layout paint;
+  touch-action: pan-y;
+}
+
+.depthStage[data-depth-layout="stack"] {
+  display: grid;
+}
+
+.depthStage[data-depth-layout="stack"] > .depthLayer {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
+.depthLayer {
+  position: relative;
+  min-width: 0;
+  transform: translate3d(
+    var(--depth-layer-x, 0px),
+    var(--depth-layer-y, 0px),
+    var(--depth-layer-z, 0px)
+  ) rotateX(var(--depth-layer-rx, 0deg)) rotateY(var(--depth-layer-ry, 0deg))
+    scale(var(--depth-layer-scale, 1));
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.depthStage[data-depth-enabled="false"] .depthLayer {
+  transform: none;
+  will-change: auto;
+}
+
+@media (max-width: 720px) {
+  .poster img {
+    object-position: var(
+      --scrub-object-position,
+      var(--cinematic-mobile-focal-point, 50% 50%)
+    );
+  }
+
+  .stickyFrame {
+    min-height: min(480px, calc(100svh - var(--scrub-sticky-top, 0px)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrubRoot {
+    min-height: 100svh;
+  }
+
+  .scrubVideo {
+    display: none;
+  }
+
+  .poster {
+    opacity: 1 !important;
+  }
+
+  .depthLayer {
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "outputSha256": "5c0bf6722cc6d3911623b1192a060f545f4430e555b0067234d24fcd2253028d",
+  "outputFrames": 241,
+  "width": 1920,
+  "height": 1080,
+  "gop": 6,
+  "planes": [
+    {
+      "exportedUntrackedEdgeFrames": 0,
+      "exportedInterpolatedFrames": 0
+    },
+    {
+      "exportedUntrackedEdgeFrames": 0,
+      "exportedInterpolatedFrames": 0
+    }
+  ]
+}

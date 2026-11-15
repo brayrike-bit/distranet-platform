@@ -1,0 +1,20 @@
+/* Public chrome only: the member dashboard typography/layout stays unchanged. */
+html body .site-header[data-editorial="true"] { background:#faf8f2; backdrop-filter:none; color:#252d29; border-bottom:1px solid #e1e2d7; }
+html body .site-header[data-editorial="true"] .site-header-center { color:#65705d; text-transform:none; letter-spacing:.02em; font-size:13px; }
+html body .site-header[data-editorial="true"] .site-header-center i { background:#b9c0b0; width:20px; }
+html body .site-header[data-editorial="true"] .portal-link { background:#bb2937; border-color:#bb2937; box-shadow:none; color:#fff; text-transform:none; letter-spacing:0; font-size:14px; font-weight:500; }
+html body .site-header[data-editorial="true"] .portal-link b { color:#fff; }
+html body .site-header[data-editorial="true"] .portal-link::after { display:none; }
+html body .site-header[data-editorial="true"] .menu-toggle { background:transparent; color:#414d41; border-color:#c7cebe; text-transform:none; letter-spacing:0; font-size:14px; }
+html body .site-header[data-editorial="true"] .menu-toggle b { background:#414d41; }
+html body .site-header[data-editorial="true"] :is(a,button):focus-visible { outline:3px solid #9f2532; outline-offset:5px; }
+html body .site-menu :is(a,button):focus-visible { outline:3px solid #9f2532; outline-offset:5px; }
+html body .site-menu { background:#f3f0e8; color:#30372d; }
+html body .site-menu .menu-atmosphere { display:none; }
+html body .site-menu nav a { border-color:#d4dacb; }
+html body .site-menu nav a strong { color:#2c342c; font-size:clamp(28px,3.1vw,48px); font-weight:500; letter-spacing:-.03em; }
+html body .site-menu nav a.current { background:#e8dfd1; box-shadow:inset 3px 0 #ba2936; }
+html body .site-menu nav a.current strong { color:#aa2633; }
+html body .site-menu nav a > span,html body .site-menu .menu-footer { color:#5c6853; }
+html body .site-menu nav a:hover { background:#e8dfd1; }
+@media(max-width:640px) { html body .site-header[data-editorial="true"] .portal-link,html body .site-header[data-editorial="true"] .menu-toggle { font-size:12px; } }

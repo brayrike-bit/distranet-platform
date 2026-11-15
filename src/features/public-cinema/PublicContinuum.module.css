@@ -1,0 +1,220 @@
+.root {
+  --continuum-progress: 0;
+  --continuum-percent: 0%;
+  --continuum-turn: 0deg;
+  --continuum-turn-half: 0deg;
+  --continuum-turn-slow: 0deg;
+  --continuum-shift: -17vh;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: #000;
+  color: #fff;
+}
+
+.field {
+  position: sticky;
+  z-index: 0;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  min-height: 620px;
+  margin-bottom: -100svh;
+  overflow: hidden;
+  pointer-events: none;
+  background: #000;
+}
+
+.field::before,
+.field::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.field::before {
+  inset: 0;
+  opacity: .42;
+  background:
+    linear-gradient(90deg, #000 0 67%, rgba(237, 28, 36, .055) 100%),
+    linear-gradient(0deg, #000 0 8%, transparent 38% 84%, #000);
+}
+
+.field::after {
+  top: 9vh;
+  right: 4vw;
+  bottom: 9vh;
+  width: 1px;
+  opacity: .42;
+  background: linear-gradient(0deg, transparent, rgba(255,255,255,.68) 18% 82%, transparent);
+}
+
+/* Editorial copy and imagery never share the same physical layer. The route
+   continuum owns only the far-edge progress signal; all prior background
+   rotors/rails are intentionally suppressed to prevent text collisions. */
+.rails,
+.rotor,
+.signal,
+.identity { display: none; }
+
+.rails {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, var(--continuum-shift), 0) rotate(-7deg) scale(1.08);
+  transform-origin: 72% 50%;
+  will-change: transform;
+}
+
+.rails i {
+  position: absolute;
+  right: -12vw;
+  top: calc(12% + var(--rail-index, 0) * 9.5%);
+  width: min(88vw, 1380px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22) 18%, #fff 51%, #ed1c24 73%, transparent);
+  opacity: calc(.16 + var(--rail-index, 0) * .025);
+}
+
+.rails i:nth-child(1) { --rail-index: 0; }
+.rails i:nth-child(2) { --rail-index: 1; }
+.rails i:nth-child(3) { --rail-index: 2; }
+.rails i:nth-child(4) { --rail-index: 3; }
+.rails i:nth-child(5) { --rail-index: 4; }
+.rails i:nth-child(6) { --rail-index: 5; }
+.rails i:nth-child(7) { --rail-index: 6; }
+.rails i:nth-child(8) { --rail-index: 7; }
+.rails i:nth-child(9) { --rail-index: 8; }
+
+.rotor {
+  position: absolute;
+  top: 50%;
+  right: clamp(7vw, 12vw, 220px);
+  width: min(38vw, 610px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255,255,255,.46);
+  border-radius: 50%;
+  transform: translateY(-50%) rotate(var(--continuum-turn));
+  will-change: transform;
+}
+
+.rotor::before,
+.rotor::after,
+.rotor i,
+.rotor span {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.rotor::before { inset: 9%; border: 2px solid #ed1c24; }
+.rotor::after { inset: 29%; border: 1px solid #fff; box-shadow: inset 0 0 0 9px #000; }
+.rotor i { inset: 47%; background: #fff; box-shadow: 0 0 0 5px #ed1c24; }
+.rotor span { inset: 40%; border: 1px solid rgba(255,255,255,.42); }
+.rotor i:nth-child(1) { transform: translateY(-41%) rotate(0deg) translateY(-170%); }
+.rotor i:nth-child(2) { transform: translateY(41%) rotate(120deg) translateY(-170%); }
+.rotor i:nth-child(3) { transform: translateX(-41%) rotate(240deg) translateY(-170%); }
+
+.signal {
+  position: absolute;
+  inset: 11% 5% 11% auto;
+  width: min(62vw, 980px);
+}
+
+.signal i {
+  position: absolute;
+  left: 0;
+  width: var(--continuum-percent);
+  max-width: 100%;
+  height: 2px;
+  background: #ed1c24;
+  box-shadow: 0 0 20px rgba(237,28,36,.8);
+}
+
+.signal i:nth-child(1) { top: 18%; }
+.signal i:nth-child(2) { top: 39%; width: var(--continuum-percent-83); }
+.signal i:nth-child(3) { top: 62%; width: var(--continuum-percent-69); }
+.signal i:nth-child(4) { top: 81%; width: var(--continuum-percent-53); }
+
+.identity {
+  position: absolute;
+  right: 5vw;
+  bottom: 4.5vh;
+  display: flex;
+  width: min(520px, 43vw);
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  opacity: .9;
+}
+
+.identity :global(.brand) { width: min(240px, 22vw); }
+.identity span {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 720;
+  letter-spacing: .12em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.progress {
+  position: absolute;
+  right: calc(4vw - 1px);
+  top: 9vh;
+  width: 2px;
+  height: 82vh;
+  background: transparent;
+}
+
+.progress i {
+  display: block;
+  width: 100%;
+  height: var(--continuum-percent);
+  background: #ed1c24;
+}
+
+.content { position: relative; z-index: 2; }
+
+.content > :global(section) {
+  position: relative;
+  min-height: 100svh;
+  background: transparent !important;
+}
+
+.content > :global(section)::after {
+  content: "";
+  position: absolute;
+  right: 7vw;
+  bottom: 0;
+  left: 7vw;
+  height: 1px;
+  background: linear-gradient(90deg, #ed1c24, rgba(255,255,255,.42) 20%, transparent 76%);
+}
+
+.content :global(article) { background: transparent !important; }
+
+.content :global(a) { touch-action: manipulation; }
+
+.root[data-tone="advantage"] .rails { transform-origin: 76% 44%; }
+.root[data-tone="network"] .rotor { border-radius: 18%; transform: translateY(-50%) rotate(var(--continuum-turn-half)); }
+.root[data-tone="commerce"] .rails { transform: translate3d(0, var(--continuum-shift), 0) rotate(7deg) scale(1.08); }
+.root[data-tone="membership"] .rotor { border-radius: 0; transform: translateY(-50%) rotate(var(--continuum-turn-slow)); }
+.root[data-tone="governance"] .signal i:nth-child(even) { background: #fff; box-shadow: none; }
+
+@media (max-width: 720px) {
+  .field { min-height: 560px; }
+  .field::before { background: linear-gradient(0deg, #000 0 12%, transparent 48% 79%, #000); }
+  .field::after { display: none; }
+  .rails { right: -42vw; transform: translate3d(0, var(--continuum-shift), 0) rotate(-12deg) scale(1.3); }
+  .rotor { top: 35%; right: -14vw; width: 86vw; opacity: .68; }
+  .signal { inset: 12% -28vw 30% auto; width: 120vw; opacity: .62; }
+  .identity { right: 6vw; bottom: 3.5vh; left: 6vw; width: auto; }
+  .identity :global(.brand) { width: 48vw; }
+  .progress { right: 3vw; top: 10vh; height: 80vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rails { transform: rotate(-7deg) scale(1.08); will-change: auto; }
+  .rotor { transform: translateY(-50%) rotate(36deg); will-change: auto; }
+  .signal i { width: 58%; box-shadow: none; }
+}
