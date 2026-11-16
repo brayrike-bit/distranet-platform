@@ -6,6 +6,11 @@ import {
 } from "@/brands/member-tenants";
 import { MemberWorkspacePage } from "@/features/member-hub/workspace/MemberWorkspacePage";
 import { MemberWorkspaceShell } from "@/features/member-hub/workspace/MemberWorkspaceShell";
+import { MemberAdminDesk } from "@/features/member-hub/workspace/parity/MemberAdminDesk";
+import { MemberNetworkPrograms } from "@/features/member-hub/workspace/parity/MemberNetworkPrograms";
+import { MemberPerformanceDesk } from "@/features/member-hub/workspace/parity/MemberPerformanceDesk";
+import { MemberResourceCenter } from "@/features/member-hub/workspace/parity/MemberResourceCenter";
+import { MemberStockDesk } from "@/features/member-hub/workspace/parity/MemberStockDesk";
 import {
   MEMBER_DASHBOARD_SEGMENTS,
   memberWorkspaceHref,
@@ -52,9 +57,19 @@ export default async function MemberDashboardRoute({
   }
 
   const dashboard = route.id as MemberDashboardId;
+  const content = (() => {
+    switch (dashboard) {
+      case "trade-desk": return <MemberStockDesk member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
+      case "programs": return <MemberNetworkPrograms tenant={tenant} key={tenant.slug} />;
+      case "performance": return <MemberPerformanceDesk member={tenant.slug} key={tenant.slug} />;
+      case "resources": return <MemberResourceCenter member={tenant.slug} key={tenant.slug} />;
+      case "administration": return <MemberAdminDesk member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
+      default: return <MemberWorkspacePage tenant={tenant} workspace={dashboard} />;
+    }
+  })();
   return (
     <MemberWorkspaceShell tenant={tenant} activeWorkspace={dashboard}>
-      <MemberWorkspacePage tenant={tenant} workspace={dashboard} />
+      {content}
     </MemberWorkspaceShell>
   );
 }

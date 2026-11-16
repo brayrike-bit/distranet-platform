@@ -13,10 +13,15 @@ export type MemberWorkspaceRoute = {
     | "commerce"
     | "orders"
     | "financials"
+    | "trade-desk"
+    | "programs"
     | "inventory"
     | "customers"
     | "benchmarks"
+    | "performance"
     | "reports"
+    | "resources"
+    | "administration"
     | "settings";
   segment: string;
   legacySegments: readonly string[];
@@ -30,7 +35,7 @@ export type MemberWorkspaceRoute = {
 /**
  * The member portal's canonical information architecture.
  * Legacy prototype paths remain resolvable, while every generated link points
- * to this calmer nine-destination taxonomy.
+ * to this grouped workspace taxonomy.
  */
 export const MEMBER_WORKSPACE_ROUTES = [
   {
@@ -74,6 +79,26 @@ export const MEMBER_WORKSPACE_ROUTES = [
     group: "Business",
   },
   {
+    id: "trade-desk",
+    segment: "trade-desk",
+    legacySegments: [],
+    label: "Trade Desk",
+    shortLabel: "Trade Desk",
+    icon: "split",
+    description: "Part search, buy/sell matches, excess stock, and Shared Inventory reconciliation.",
+    group: "Business",
+  },
+  {
+    id: "programs",
+    segment: "programs",
+    legacySegments: [],
+    label: "Network Programs",
+    shortLabel: "Programs",
+    icon: "opportunity",
+    description: "Distranet impact, GPO purchasing savings, and National Account assignments.",
+    group: "Business",
+  },
+  {
     id: "inventory",
     segment: "inventory",
     legacySegments: ["operations"],
@@ -104,6 +129,16 @@ export const MEMBER_WORKSPACE_ROUTES = [
     group: "Intelligence",
   },
   {
+    id: "performance",
+    segment: "performance",
+    legacySegments: [],
+    label: "Performance",
+    shortLabel: "Performance",
+    icon: "operations",
+    description: "DemandSignal, EDI readiness, scorecards, exception reporting, and product data coverage.",
+    group: "Intelligence",
+  },
+  {
     id: "reports",
     segment: "reports",
     legacySegments: [],
@@ -114,13 +149,33 @@ export const MEMBER_WORKSPACE_ROUTES = [
     group: "Administration",
   },
   {
+    id: "resources",
+    segment: "resources",
+    legacySegments: [],
+    label: "Resources",
+    shortLabel: "Resources",
+    icon: "download",
+    description: "Communications, a named download catalog, and sample file validation.",
+    group: "Administration",
+  },
+  {
+    id: "administration",
+    segment: "administration",
+    legacySegments: [],
+    label: "Administration",
+    shortLabel: "Admin",
+    icon: "governance",
+    description: "Shipping locations, digest recipients, user permission previews, and network registries.",
+    group: "Administration",
+  },
+  {
     id: "settings",
     segment: "settings",
     legacySegments: ["services"],
     label: "Settings",
     shortLabel: "Settings",
     icon: "settings",
-    description: "Member services, data sources, locations, governance, and access planning.",
+    description: "Member services, data sources, governance definitions, and handoff planning.",
     group: "Administration",
   },
 ] as const satisfies readonly MemberWorkspaceRoute[];

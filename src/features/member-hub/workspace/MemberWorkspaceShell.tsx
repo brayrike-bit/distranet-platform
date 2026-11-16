@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { createContext, Suspense, useContext, type ReactNode } from "react";
+import { createContext, Suspense, useContext, useEffect, useRef, type ReactNode } from "react";
 import { memberBrandVariables } from "@/brands/member-theme";
 import type { MemberOverviewPeriod, MemberTenantBrand } from "@/domain/member-hub/types";
 import { MemberLogo } from "../components/MemberLogo";
@@ -76,6 +76,16 @@ function WorkspaceShellFrame({
   const activeRoute = MEMBER_WORKSPACE_ROUTES.find(
     (route) => route.id === activeWorkspace,
   ) ?? MEMBER_WORKSPACE_ROUTES[0];
+  const sidebarNavigation = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const navigation = sidebarNavigation.current;
+    const active = navigation?.querySelector('[aria-current="page"]');
+    if (!navigation || !active || navigation.clientHeight === 0) return;
+    const menuBounds = navigation.getBoundingClientRect();
+    const routeBounds = active.getBoundingClientRect();
+    if (routeBounds.top < menuBounds.top) navigation.scrollTop += routeBounds.top - menuBounds.top - 8;
+    if (routeBounds.bottom > menuBounds.bottom) navigation.scrollTop += routeBounds.bottom - menuBounds.bottom + 8;
+  }, [activeWorkspace]);
 
   const frame = (
     <div className={styles.shell} style={memberBrandVariables(tenant)} data-member-workspace={tenant.slug}>
@@ -94,7 +104,7 @@ function WorkspaceShellFrame({
           </span>
         </div>
 
-        <nav className={styles.navigation} aria-label="Member workspace pages">
+        <nav ref={sidebarNavigation} className={styles.navigation} aria-label="Member workspace pages">
           {workspaceGroups.map((group) => (
             <div className={styles.navigationGroup} key={group}>
               <p>{group}</p>
