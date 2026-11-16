@@ -35,7 +35,7 @@ const sum = (rows, key) => rows.reduce((n, row) => n + row[key], 0);
 assert.equal(MEMBER_DIRECTORY.length, 21);
 assert.equal(new Set(MEMBER_DIRECTORY.map(member => member.slug)).size, 21);
 assert.equal(Object.keys(MEMBER_TENANTS).length, 21);
-assert.equal(MEMBER_WORKSPACE_ROUTES.length, 9);
+assert.equal(MEMBER_WORKSPACE_ROUTES.length, 14);
 assert.equal(resolveMemberTenant('__proto__'), undefined);
 assert.equal(resolveMemberTenant('not-a-member'), undefined);
 
@@ -84,7 +84,7 @@ for (const identity of MEMBER_DIRECTORY) {
     periodChecks++;
   }
 }
-console.log(JSON.stringify({ status: 'PASS', members: 21, canonicalPagesPerMember: 9, brandedDestinations: 189, scopedFixtureIds: ids.size, memberPeriodChecks: periodChecks, ahpFilmPreserved: true, logosPresent: 21, brandContrastAA: true, productionDataOrAuthentication: false }, null, 2));
+console.log(JSON.stringify({ status: 'PASS', members: 21, canonicalPagesPerMember: MEMBER_WORKSPACE_ROUTES.length, brandedDestinations: MEMBER_DIRECTORY.length * MEMBER_WORKSPACE_ROUTES.length, scopedFixtureIds: ids.size, memberPeriodChecks: periodChecks, ahpFilmPreserved: true, logosPresent: 21, brandContrastAA: true, productionDataOrAuthentication: false }, null, 2));
 
 if (process.argv[2]) {
   const base = new URL(process.argv[2]);

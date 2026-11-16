@@ -30,9 +30,10 @@ const currency = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 const wholeNumber = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+type ReportingDashboardId = Exclude<MemberDashboardId, "trade-desk" | "programs" | "performance" | "resources" | "administration">;
 
 const pageCopy: Record<
-  MemberDashboardId,
+  ReportingDashboardId,
   { eyebrow: string; title: string; description: string; icon: MemberIconName }
 > = {
   commerce: {
@@ -1134,6 +1135,7 @@ function ServiceGroup({
 }
 
 function ServicesDashboard({ tenant }: { tenant: MemberTenantBrand }) {
+  const { period } = useMemberReportingPeriod();
   const current = tenant.data.services.filter((service) => service.status === "current-portal");
   const planned = tenant.data.services.filter((service) => service.status === "planned");
   const governance = tenant.data.services.filter((service) => service.status === "governance");
@@ -1146,6 +1148,14 @@ function ServicesDashboard({ tenant }: { tenant: MemberTenantBrand }) {
         <MetricCard label="Governance centers" value={wholeNumber.format(governance.length)} detail="Definition, lineage, privacy, and approval" icon="governance" />
         <MetricCard label="Customer identities" value="0" detail="Aggregate member view only" icon="lock" tone="positive" />
       </div>
+
+      <Panel eyebrow="Workspace tools" title="Manage your team and files">
+        <div className={styles.connectionGrid}>
+          <article><MemberIcon name="locations" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "administration", period) + "#locations"}>Open branch management</Link></strong><p>Review sample shipping and status records.</p></article>
+          <article><MemberIcon name="governance" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "administration", period) + "#users"}>Open user administration</Link></strong><p>Review sample accounts and section permissions.</p></article>
+          <article><MemberIcon name="download" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "resources", period) + "#downloads"}>Open document catalog</Link></strong><p>Download sample files and verify local import readiness.</p></article>
+        </div>
+      </Panel>
 
       <ServiceGroup label="Available member operations" services={current} />
       <ServiceGroup label="Planned member workflows" services={planned} />
@@ -1168,7 +1178,7 @@ export function MemberWorkspacePage({
   workspace,
 }: {
   tenant: MemberTenantBrand;
-  workspace: MemberDashboardId;
+  workspace: ReportingDashboardId;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const { period, selectPeriod } = useMemberReportingPeriod();

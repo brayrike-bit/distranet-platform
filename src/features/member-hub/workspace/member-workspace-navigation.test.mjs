@@ -27,7 +27,10 @@ const { REPORT_PERIODS, parseDemonstrationPeriod, withDemonstrationPeriod } = lo
 const { MEMBER_DIRECTORY } = loadTypeScript(new URL("../../../brands/member-directory.ts", base));
 
 assert.equal(MEMBER_DIRECTORY.length, 21);
-assert.equal(MEMBER_WORKSPACE_ROUTES.length, 9);
+assert.equal(MEMBER_WORKSPACE_ROUTES.length, 14);
+for (const route of ["trade-desk", "programs", "performance", "resources", "administration"]) {
+  assert.equal(resolveMemberWorkspace(route)?.id, route);
+}
 assert.deepEqual(REPORT_PERIODS, ["MTD", "QTD", "YTD", "12M"]);
 
 let companyWorkspacePeriodCases = 0;
