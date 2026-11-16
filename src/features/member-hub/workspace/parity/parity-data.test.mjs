@@ -2,16 +2,31 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
 
+const fixtures = new Map();
 function loadFixture(name) {
+  if (fixtures.has(name)) return fixtures.get(name).exports;
   const mod = { exports: {} };
+  fixtures.set(name, mod);
   const { outputText } = ts.transpileModule(readFileSync(new URL(name + ".ts", import.meta.url), "utf8"),
     { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } });
-  new Function("module", "exports", outputText)(mod, mod.exports);
+  new Function("module", "exports", "require", outputText)(mod, mod.exports, specifier => {
+    assert.equal(specifier, "./parity-data");
+    return loadFixture("parity-data");
+  });
   return mod.exports;
 }
 
 const { demandFixture, evidenceScore, previewCsv, summarizeDemand } = loadFixture("parity-data");
 const { findStock, lotPrice, makeSampleStock, sampleMonths, stockQuantity, transferBalance } = loadFixture("sample-stock-model");
+const { ediFixture, ediOutstanding, filterEdiPeers, summarizeEdi } = loadFixture("edi-preview-data");
+const edi = ediFixture("air-hydro-power");
+const ediSummary = summarizeEdi(edi);
+assert.equal(edi.length, 20);
+assert.equal(ediSummary.total + ediSummary.notApplicable, 40);
+assert.equal(ediSummary.live + ediSummary.testing + ediSummary.open, ediSummary.total);
+assert.equal(ediOutstanding(edi, "all", "all").length, ediSummary.testing + ediSummary.open);
+assert.equal(summarizeEdi([]).completion, null);
+assert.ok(filterEdiPeers(edi, { peer: "all", direction: "buying", status: "Open" }).every(row => row.buying === "Open"));
 const makeRow = (impressions, top) => ({ month: "Feb", part: "SAMPLE", searches: 1, impressions, top, lost: 0 });
 assert.deepEqual(summarizeDemand([makeRow(100, 90), makeRow(300, 30)]), { searches: 2, impressions: 400, top: 45, lost: 0 });
 assert.equal(summarizeDemand([]).top, null);
@@ -32,4 +47,4 @@ assert.ok(stockQuantity(group, "Standard") > stockQuantity(group, "Dead"));
 assert.ok(lotPrice(group.lots.find(lot => lot.kind === "Standard")) > lotPrice(group.lots.find(lot => lot.kind === "Dead")));
 assert.deepEqual(transferBalance({ ...transfers[0], flow: "Sold", grossCents: 100000, exemptionCents: 10000 }), { adjusted: 90000, fee: 630 });
 assert.deepEqual(transferBalance({ ...transfers[0], flow: "Purchased", grossCents: 100000, exemptionCents: 10000 }), { adjusted: 90000, fee: 1170 });
-console.log(JSON.stringify({ status: "PASS", verified: ["demand weighted rates", "evidence weights", "CSV escaping", "sample member separation", "stock grouping and flags", "directional fee math"] }));
+console.log(JSON.stringify({ status: "PASS", verified: ["demand weighted rates", "evidence weights", "CSV escaping", "sample member separation", "stock grouping and flags", "directional fee math", "EDI directions, exclusions, and filters"] }));

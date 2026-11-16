@@ -7,9 +7,37 @@ export type MemberWorkspaceGroup =
   | "Intelligence"
   | "Administration";
 
+const moduleRoute = <Id extends string, Surface extends string, Section extends string>(
+  id: Id, label: string, icon: MemberIconName, description: string, surface: Surface, section: Section, group: MemberWorkspaceGroup,
+) => ({ id, segment: id, label, shortLabel: label, icon, description, surface, section, group, legacySegments: [] as const });
+
+export const MEMBER_MODULE_ROUTES = [
+  moduleRoute("impact", "DistraNet Impact", "pulse", "See the network's illustrative sales and purchasing contribution.", "programs", "impact", "Workspace"),
+  moduleRoute("buy-sell-opportunities", "Buy/Sell Opportunities", "commerce", "Review sample buying and selling opportunities and update follow-up status.", "trade", "buy-sell", "Business"),
+  moduleRoute("dead-excess-stock", "Dead & Excess Stock", "operations", "Find slow-moving sample inventory and track recovery.", "trade", "dead-excess", "Business"),
+  moduleRoute("shared-inventory", "Shared Inventory", "inventory", "Reconcile illustrative network purchases, sales, fees and adjustments.", "trade", "shared-inventory", "Business"),
+  moduleRoute("demand-signal", "DemandSignal", "pulse", "Review sample national demand and part-level opportunities.", "performance", "demand-signal", "Business"),
+  moduleRoute("exception-reporting", "Exception Reporting", "governance", "Log and triage illustrative exceptions and review supporting evidence.", "performance", "exceptions", "Intelligence"),
+  moduleRoute("member-scorecard", "Member Scorecard", "pulse", "Review evidence-weighted measures, exclusions and follow-up actions.", "performance", "scorecard", "Intelligence"),
+  moduleRoute("gpo-dashboard", "GPO Dashboard", "finance", "Explore sample purchasing programs, retained savings and open opportunities.", "programs", "gpo", "Intelligence"),
+  moduleRoute("national-accounts", "National Accounts", "locations", "Review fictional account assignments and program economics.", "programs", "national-accounts", "Intelligence"),
+  moduleRoute("industry-data-pool", "Industry Data Pool", "operations", "Review illustrative catalog coverage and data quality.", "performance", "data-pool", "Intelligence"),
+  moduleRoute("communications", "Communications", "statements", "Read sample notices and preview communications without sending.", "resources", "communications", "Administration"),
+  moduleRoute("downloads", "Downloads", "download", "Find illustrative reports, document slots, and sample files.", "resources", "downloads", "Administration"),
+  moduleRoute("email-recipients", "Email Recipients", "statements", "Review sample buy, sell and weekly digest preferences.", "admin", "recipients", "Administration"),
+  moduleRoute("locations", "Locations", "locations", "Review sample branch records, shipping settings and locations.", "admin", "locations", "Administration"),
+  moduleRoute("manage-users", "Manage Users", "portrait", "Preview roles and module access without creating live credentials.", "admin", "users", "Administration"),
+  moduleRoute("manage-network", "Manage Network", "governance", "Review sample members, manufacturers and division registries.", "admin", "network-admin", "Administration"),
+] as const;
+export type MemberModuleRoute = typeof MEMBER_MODULE_ROUTES[number];
+export type MemberModuleId = MemberModuleRoute["id"];
+
 export type MemberWorkspaceRoute = {
   id:
     | "overview"
+    | "parts-search"
+    | "edi-compliance"
+    | "tools"
     | "commerce"
     | "orders"
     | "financials"
@@ -22,7 +50,8 @@ export type MemberWorkspaceRoute = {
     | "reports"
     | "resources"
     | "administration"
-    | "settings";
+    | "settings"
+    | MemberModuleId;
   segment: string;
   legacySegments: readonly string[];
   label: string;
@@ -46,6 +75,36 @@ export const MEMBER_WORKSPACE_ROUTES = [
     shortLabel: "Overview",
     icon: "portrait",
     description: "Executive orientation, network value, and the next actions that need attention.",
+    group: "Workspace",
+  },
+  {
+    id: "parts-search",
+    segment: "parts-search",
+    legacySegments: [],
+    label: "Parts Search",
+    shortLabel: "Parts Search",
+    icon: "opportunity",
+    description: "Find standard, excess, and dead stock by part number, manufacturer, and stocking branch.",
+    group: "Workspace",
+  },
+  {
+    id: "edi-compliance",
+    segment: "edi-compliance",
+    legacySegments: [],
+    label: "EDI Compliance",
+    shortLabel: "EDI Compliance",
+    icon: "split",
+    description: "Review the buying and selling directions of the illustrative EDI partner matrix.",
+    group: "Workspace",
+  },
+  {
+    id: "tools",
+    segment: "tools",
+    legacySegments: [],
+    label: "All Member Tools",
+    shortLabel: "All Tools",
+    icon: "operations",
+    description: "Find every member workflow by name, from Parts Search to Manage Network.",
     group: "Workspace",
   },
   {
@@ -178,6 +237,7 @@ export const MEMBER_WORKSPACE_ROUTES = [
     description: "Member services, data sources, governance definitions, and handoff planning.",
     group: "Administration",
   },
+  ...MEMBER_MODULE_ROUTES,
 ] as const satisfies readonly MemberWorkspaceRoute[];
 
 export type MemberWorkspaceId = (typeof MEMBER_WORKSPACE_ROUTES)[number]["id"];

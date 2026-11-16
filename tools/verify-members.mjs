@@ -29,13 +29,16 @@ const { MEMBER_TENANTS, resolveMemberTenant } = load('src/brands/member-tenants.
 const { memberDataForPeriod } = load('src/features/member-hub/member-demo-data.ts');
 const { contrastRatio, memberBrandVariables } = load('src/brands/member-theme.ts');
 const { MEMBER_WORKSPACE_ROUTES, memberWorkspaceHref } = load('src/features/member-hub/workspace/member-workspace-routes.ts');
+const { MEMBER_TOOL_GROUPS } = load('src/features/member-hub/workspace/parity/member-tool-directory.ts');
 const close = (a, b) => assert.ok(Math.abs(a - b) < 0.01, `${a} != ${b}`);
 const sum = (rows, key) => rows.reduce((n, row) => n + row[key], 0);
 
 assert.equal(MEMBER_DIRECTORY.length, 21);
 assert.equal(new Set(MEMBER_DIRECTORY.map(member => member.slug)).size, 21);
 assert.equal(Object.keys(MEMBER_TENANTS).length, 21);
-assert.equal(MEMBER_WORKSPACE_ROUTES.length, 14);
+assert.equal(MEMBER_WORKSPACE_ROUTES.length, 33);
+const primaryRoutes = new Set(MEMBER_TOOL_GROUPS.flatMap(group => group.tools.map(tool => tool.route)));
+assert.equal(primaryRoutes.size, 19);
 assert.equal(resolveMemberTenant('__proto__'), undefined);
 assert.equal(resolveMemberTenant('not-a-member'), undefined);
 
@@ -89,6 +92,7 @@ console.log(JSON.stringify({ status: 'PASS', members: 21, canonicalPagesPerMembe
 if (process.argv[2]) {
   const base = new URL(process.argv[2]);
   let routes = 0;
+  let verifiedMenuDestinations = 0;
   for (const member of MEMBER_DIRECTORY) {
     for (const route of MEMBER_WORKSPACE_ROUTES) {
       const response = await fetch(new URL(memberWorkspaceHref(member.slug, route.id), base));
@@ -97,9 +101,16 @@ if (process.argv[2]) {
       assert.ok(html.includes(`data-member-workspace="${member.slug}"`), 'Correct tenant shell');
       assert.ok(html.includes('Demonstration data'), 'Demo disclosure');
       assert.ok(html.includes(member.logo), 'Correct logo');
+      if (primaryRoutes.has(route.id)) {
+        if (route.id !== "overview") {
+          assert.ok(html.includes(`data-member-module="${route.id}"`), `Direct module content: ${member.slug}/${route.id}`);
+          assert.equal((html.match(/data-member-module="/g) ?? []).length, 1, "Only the requested tool is rendered");
+        }
+        verifiedMenuDestinations++;
+      }
       routes++;
     }
   }
   assert.equal((await fetch(new URL('/member-hub/not-a-member', base))).status, 404);
-  console.log(JSON.stringify({ status: 'PASS', base: base.origin, verifiedMemberRoutes: routes, unknownMemberReturns404: true }));
+  console.log(JSON.stringify({ status: 'PASS', base: base.origin, verifiedMemberRoutes: routes, verifiedMenuDestinations, unknownMemberReturns404: true }));
 }

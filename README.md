@@ -20,15 +20,16 @@ The current films and posters travel with the site, including the original Air H
 
 ## Member workflow coverage
 
-Membership, statistics, locations, files and access examples are illustrative. The five workflow pages in each branded workspace were mapped from [Dave’s public member-hub source](https://github.com/daverike-dot/distranet-member-hub/tree/8d359b14802266ffcac862ccf8834ec7b463a147) and implemented in the existing Next.js workspace.
+Membership, statistics, locations, files and access examples are illustrative. Each of the 21 branded workspaces uses Dave’s menu and page structure, mapped from [his public member-hub source](https://github.com/daverike-dot/distranet-member-hub/tree/8d359b14802266ffcac862ccf8834ec7b463a147). Every option opens its own page; older links still work.
 
 | Workspace | Workflows |
 | --- | --- |
-| Trade Desk | Parts Search, branch-level stock and price classes, Buy/Sell Opportunities, Dead & Excess Stock, Shared Inventory reconciliation, sample adjustments and loss journal |
-| Network Programs | Distranet Impact, GPO purchasing and savings, National Accounts assignments |
-| Performance | DemandSignal, EDI buying/selling matrix, evidence-weighted scorecard, exception triage, Industry Data Pool coverage |
-| Resources | Announcements and sample communication drafts, data and GPO document catalogs, CSV/report exports, local import and checksum receipts |
-| Administration | Locations and shipping settings, sample recipient preferences and digest preview, account and module-access controls, sample network registries |
+| Your Workspace | Overview, DistraNet Impact |
+| Trade & Inventory | Parts Search, Buy/Sell Opportunities, Dead & Excess Stock, Shared Inventory, DemandSignal |
+| Performance | EDI Compliance, Exception Reporting, Member Scorecard, GPO Dashboard, National Accounts |
+| Connected Knowledge | Industry Data Pool, Communications, Downloads |
+| Member Administration | Email Recipients, Locations, Manage Users |
+| Network Administration | Manage Network |
 
 Browser-tab examples do not grant access or create accounts, passwords, messages, real inventory transactions, or shared documents. The import check reads a user-selected sample in memory, verifies its name and size and calculates SHA-256. The library can attach only references to exact built-in samples; no selected file bytes are saved or sent. Catalog references to original PDFs are intentionally unavailable. CSVs and receipts are generated in the browser.
 

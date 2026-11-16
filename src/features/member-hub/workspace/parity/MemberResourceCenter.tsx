@@ -6,8 +6,11 @@ import type { MemberSlug } from "@/domain/member-hub/types";
 import { MemberIcon } from "../../components/MemberIcon";
 import { useMemberReportingPeriod } from "../MemberWorkspaceShell";
 import { memberWorkspacePeriodHref } from "../member-workspace-navigation";
-import { DataTable, Section, styles, usePreviewState, WorkspaceIntro } from "./ParityUI";
-import { downloadPreview, previewCsv } from "./parity-data";
+import type { MemberModuleRoute } from "../member-workspace-routes";
+import { DataTable, ModuleWorkspace, Section, styles, usePreviewState, WorkspaceIntro } from "./ParityUI";
+import { demandFixture, downloadPreview, previewCsv, summarizeDemand } from "./parity-data";
+import { ediFixture } from "./edi-preview-data";
+import { makeSampleStock, transferBalance } from "./sample-stock-model";
 
 const feeds = [
   { group: "Inventory", files: ["dsinv.dca", "dsinv.dfi", "master_inv3.csv"] },
@@ -40,7 +43,7 @@ const audiences = ["Member operations team", "Member leadership", "Member purcha
 type Draft = { topic: string; audience: string; attachSample: boolean };
 type AttachmentReceipt = { slot: string; bytes: number; hash: string; matchesBuiltInSample: boolean };
 
-export function MemberResourceCenter({ member }: { member: MemberSlug }) {
+export function MemberResourceCenter({ member, name, selected }: { member: MemberSlug; name: string; selected?: MemberModuleRoute }) {
   const { period } = useMemberReportingPeriod();
   const [category, setCategory] = useState("all");
   const [query, setQuery] = useState("");
@@ -57,6 +60,38 @@ export function MemberResourceCenter({ member }: { member: MemberSlug }) {
   const files = feeds.flatMap(group => group.files.map(filename => ({ filename, group: group.group })));
   const visibleFiles = files.filter(file => (category === "all" || file.group === category)
     && (file.filename + " " + file.group).toLowerCase().includes(query.trim().toLowerCase()));
+  function downloadReport(report: "shared-inventory" | "edi-matrix" | "buy-sell" | "dead-excess" | "demand-signal") {
+    const stock = makeSampleStock(member, name);
+    let rows: Parameters<typeof previewCsv>[0];
+    switch (report) {
+      case "shared-inventory":
+        rows = [["Transfer", "Month", "Direction", "Gross USD", "Exemption USD", "Adjusted USD", "Sample fee USD"], ...stock.transfers.map(item => {
+          const result = transferBalance(item);
+          return [item.id, item.month, item.flow, item.grossCents / 100, item.exemptionCents / 100, result.adjusted / 100, result.fee / 100];
+        })];
+        break;
+      case "edi-matrix":
+        rows = [["Sample partner", "Buying from peer", "Selling to peer"], ...ediFixture(member).map(peer => [peer.label, peer.buying, peer.selling])];
+        break;
+      case "buy-sell":
+        rows = [["Opportunity", "Side", "Part", "Description", "Quantity", "Illustrative value USD"], ...stock.matches.map(match => [match.id, match.side, match.sku, match.description, match.units, match.valueCents / 100])];
+        break;
+      case "dead-excess":
+        rows = [["Part", "Class", "Branch", "Confirmed units", "Flagged units", "Replacement unit cost USD"], ...stock.lots.filter(lot => lot.owner === name && lot.kind !== "Standard").map(lot => [
+          lot.sku, lot.kind, lot.location ?? "Unconfirmed", lot.location ? lot.quantity : 0, lot.location ? 0 : lot.quantity, lot.replacementCents / 100,
+        ])];
+        break;
+      case "demand-signal": {
+        const demand = demandFixture(member);
+        rows = [["Month", "Searches", "Impressions", "Top impression rate %", "Lost impression share %"], ...[...new Set(demand.map(row => row.month))].map(month => {
+          const result = summarizeDemand(demand.filter(row => row.month === month));
+          return [month, result.searches, result.impressions, result.top?.toFixed(1) ?? null, result.lost?.toFixed(1) ?? null];
+        })];
+        break;
+      }
+    }
+    downloadPreview(member + "-" + report + "-illustrative.csv", previewCsv([["Illustrative baseline snapshot, excluding changes made in this browser tab"], ...rows]));
+  }
 
   async function validateFile(file?: File) {
     setReceipt(undefined); setFileStatus("");
@@ -79,12 +114,12 @@ export function MemberResourceCenter({ member }: { member: MemberSlug }) {
     }
   }
 
-  return <div className={styles.workspace}>
-    <WorkspaceIntro icon="download" title="Resource center" description="Find the files, program materials, reporting exports and team updates your workspace depends on." sections={[["communications", "Communications"], ["downloads", "Downloads"], ["import-check", "Sample import check"]]} />
+  return <ModuleWorkspace selected={selected} related={selected?.section === "downloads" ? ["import-check"] : []}
+    intro={<WorkspaceIntro icon="download" title="Resource center" description="Find the files, program materials, reporting exports and team updates your workspace depends on." sections={[["communications", "Communications"], ["downloads", "Downloads"], ["import-check", "Sample import check"]]} />}>
     <Section id="communications" title="Communications" description="Read illustrative network messages and practice drafting a notice for your team. Nothing is sent.">
       <div className={styles.cards}>
-        <article className={styles.card}><span className={styles.badge}>Network notice</span><h3>Inventory file readiness</h3><p>Check branch codes before submitting a refresh. Use the sample import check to verify the expected filename.</p><a href="#import-check">Open import check</a></article>
-        <article className={styles.card}><span className={styles.badge}>Purchasing bulletin</span><h3>GPO program review</h3><p>Review your enrollment and retained-savings examples before the next purchasing discussion.</p><Link href={memberWorkspacePeriodHref(member, "programs", period) + "#gpo"}>Review programs</Link></article>
+        <article className={styles.card}><span className={styles.badge}>Network notice</span><h3>Inventory file readiness</h3><p>Check branch codes before submitting a refresh. Use the sample import check to verify the expected filename.</p><Link href={memberWorkspacePeriodHref(member, "downloads", period) + "#import-check"}>Open import check</Link></article>
+        <article className={styles.card}><span className={styles.badge}>Purchasing bulletin</span><h3>GPO program review</h3><p>Review your enrollment and retained-savings examples before the next purchasing discussion.</p><Link href={memberWorkspacePeriodHref(member, "gpo-dashboard", period)}>Review programs</Link></article>
       </div>
       <details><summary>Compose a sample notice</summary>
         <form className={styles.form} onSubmit={event => {
@@ -100,13 +135,18 @@ export function MemberResourceCenter({ member }: { member: MemberSlug }) {
           <p className={draftStatus ? styles.note : styles.srOnly} role="status">{draftStatus}</p>
         </form>
       </details>
-      <details><summary>Draft history ({drafts.length})</summary><DataTable caption="Sample notices saved in this browser tab" heads={["Topic", "Audience", "Attachment", "Delivery"]} rows={drafts.map(draft => [draft.topic, draft.audience, draft.attachSample ? "Illustrative template" : "None", "Not sent"])} /></details>
+      <details><summary>Notification outbox ({drafts.length})</summary><DataTable caption="Sample notices saved in this browser tab; not sent" heads={["Topic", "Audience", "Attachment", "Delivery"]} rows={drafts.map(draft => [draft.topic, draft.audience, draft.attachSample ? "Illustrative template" : "None", "Not sent"])} /></details>
     </Section>
     <Section id="downloads" title="Downloads and file catalog" description="Download clearly marked samples and see which production resources require an authorized source. No partner PDFs or member data were imported.">
+      <h3>Downloadable sample reports</h3>
+      <p className={styles.muted}>These are baseline exports for this workspace. Open a tool to export its current filters or browser-tab changes.</p>
       <div className={styles.toolbar}>
-        <Link className={styles.button} data-action="primary" href={memberWorkspacePeriodHref(member, "reports", period)}><MemberIcon name="reports" /> Member report exports</Link>
-        <Link className={styles.button} href={memberWorkspacePeriodHref(member, "trade-desk", period) + "#shared-inventory"}>Shared Inventory report</Link>
-        <Link className={styles.button} href={memberWorkspacePeriodHref(member, "performance", period) + "#edi"}>EDI matrix export</Link>
+        {([["shared-inventory", "Shared Inventory"], ["edi-matrix", "EDI matrix"], ["buy-sell", "Buy/Sell"], ["dead-excess", "Dead & Excess Stock"], ["demand-signal", "DemandSignal"]] as const).map(([report, label]) => (
+          <button className={styles.button} key={report} onClick={() => downloadReport(report)}><MemberIcon name="download" />{label} CSV</button>
+        ))}
+        <Link className={styles.button} href={memberWorkspacePeriodHref(member, "impact", period)}>Open impact exports</Link>
+        <Link className={styles.button} href={memberWorkspacePeriodHref(member, "gpo-dashboard", period)}>Open GPO exports</Link>
+        <Link className={styles.button} href={memberWorkspacePeriodHref(member, "reports", period)}><MemberIcon name="reports" /> More report exports</Link>
       </div>
       <h3>Data-file slots</h3>
       <div className={styles.toolbar}>
@@ -114,7 +154,7 @@ export function MemberResourceCenter({ member }: { member: MemberSlug }) {
         <label className={styles.field}>Find a file<input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="e.g. location.csv" /></label>
       </div>
       <DataTable caption="Expected named file slots and downloadable examples" heads={["Expected filename", "Category", "Production file", "Illustrative example"]} rows={visibleFiles.map(file => [file.filename, file.group, "Not connected", <button className={styles.button} onClick={() => downloadPreview(file.filename, sampleFor(file.filename), file.filename.endsWith(".csv") ? "text/csv" : "text/plain")} aria-label={"Download sample " + file.filename}>Download sample</button>])} />
-      <details><summary>GPO document catalog ({resources.length})</summary><DataTable caption="GPO document references; original PDFs not attached" heads={["Resource", "Topic", "Status"]} rows={resources.map(row => [row[0], row[1], "Original PDF not connected"])} /></details>
+      <div id="gpo-documents"><details><summary>GPO document catalog ({resources.length})</summary><DataTable caption="GPO document references; original PDFs not attached" heads={["Resource", "Topic", "Status"]} rows={resources.map(row => [row[0], row[1], "Original PDF not connected"])} /></details></div>
       <details><summary>Shared document library ({attachedSlots.length} samples)</summary>
         {attachedSlots.length
           ? <DataTable caption="Recognized sample files attached to this browser tab" heads={["Sample file", "Status", "Manage"]} rows={attachedSlots.map(filename => [filename, "Sample attached to this tab only", <button className={styles.button} onClick={() => setAttachedSlots(attachedSlots.filter(value => value !== filename))} aria-label={"Remove sample attachment " + filename}>Remove sample</button>])} />
@@ -142,5 +182,5 @@ export function MemberResourceCenter({ member }: { member: MemberSlug }) {
         <li>Queue expensive parsing and exports, validate the preview before committing imports, and keep an audit trail. Use short-lived, tenant-authorized export links.</li>
       </ol></details>
     </Section>
-  </div>;
+  </ModuleWorkspace>;
 }

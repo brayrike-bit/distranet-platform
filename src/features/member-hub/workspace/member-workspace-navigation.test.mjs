@@ -25,13 +25,32 @@ const { memberWorkspacePeriodHref, memberDirectoryPeriodHref } = loadTypeScript(
 const { MEMBER_WORKSPACE_ROUTES, resolveMemberWorkspace } = loadTypeScript(new URL("member-workspace-routes.ts", base));
 const { REPORT_PERIODS, parseDemonstrationPeriod, withDemonstrationPeriod } = loadTypeScript(new URL("demonstration-report-export.ts", base));
 const { MEMBER_DIRECTORY } = loadTypeScript(new URL("../../../brands/member-directory.ts", base));
+const { MEMBER_TOOL_GROUPS, filterMemberTools, memberToolHref } = loadTypeScript(new URL("parity/member-tool-directory.ts", base));
 
 assert.equal(MEMBER_DIRECTORY.length, 21);
-assert.equal(MEMBER_WORKSPACE_ROUTES.length, 14);
+assert.equal(MEMBER_WORKSPACE_ROUTES.length, 33);
 for (const route of ["trade-desk", "programs", "performance", "resources", "administration"]) {
   assert.equal(resolveMemberWorkspace(route)?.id, route);
 }
 assert.deepEqual(REPORT_PERIODS, ["MTD", "QTD", "YTD", "12M"]);
+assert.deepEqual(MEMBER_TOOL_GROUPS.map(group => [group.title, group.tools.map(tool => tool.label)]), [
+  ["Your Workspace", ["Overview", "DistraNet Impact"]],
+  ["Trade & Inventory", ["Parts Search", "Buy/Sell Opportunities", "Dead & Excess Stock", "Shared Inventory", "DemandSignal"]],
+  ["Performance", ["EDI Compliance", "Exception Reporting", "Member Scorecard", "GPO Dashboard", "National Accounts"]],
+  ["Connected Knowledge", ["Industry Data Pool", "Communications", "Downloads"]],
+  ["Member Administration", ["Email Recipients", "Locations", "Manage Users"]],
+  ["Network Administration", ["Manage Network"]],
+]);
+const tools = MEMBER_TOOL_GROUPS.flatMap(group => group.tools);
+assert.equal(new Set(tools.map(tool => tool.route)).size, 19, "Each menu option opens a distinct page");
+assert.deepEqual(filterMemberTools("electronic data interchange").flatMap(group => group.tools.map(tool => tool.label)), ["EDI Compliance"]);
+assert.equal(filterMemberTools("no-matching-phrase").length, 0);
+for (const member of MEMBER_DIRECTORY) for (const tool of tools) for (const period of REPORT_PERIODS) {
+  const href = new URL(memberToolHref(member.slug, period, tool), "https://distranet.invalid");
+  assert.equal(href.hash, "", "No menu option should be a subsection bookmark");
+  assert.equal(href.search, "?period=" + period);
+  assert.ok(href.pathname.startsWith("/member-hub/" + member.slug));
+}
 
 let companyWorkspacePeriodCases = 0;
 for (const member of MEMBER_DIRECTORY) {

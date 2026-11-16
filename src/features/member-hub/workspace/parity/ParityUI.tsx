@@ -1,8 +1,21 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { Children, isValidElement, useEffect, useState, type ReactNode } from "react";
 import { MemberIcon, type MemberIconName } from "../../components/MemberIcon";
+import type { MemberModuleRoute } from "../member-workspace-routes";
 import styles from "./ParityUI.module.css";
 
 export { styles };
+
+// The old multi-tool pages remain valid bookmarks. Each menu destination
+// renders only its own section and shares its original controls and fixtures.
+export function ModuleWorkspace({ selected, intro, related = [], children }: {
+  selected?: MemberModuleRoute; intro: ReactNode; related?: readonly string[]; children: ReactNode;
+}) {
+  const visible = selected ? new Set([selected.section, ...related]) : null;
+  return <div className={styles.workspace} data-member-module={selected?.id}>
+    {selected ? <WorkspaceIntro icon={selected.icon} title={selected.label} description={selected.description} /> : intro}
+    {visible ? Children.toArray(children).filter(child => isValidElement<{ id?: string }>(child) && child.props.id && visible.has(child.props.id)) : children}
+  </div>;
+}
 
 export function WorkspaceIntro({ icon, title, description, sections }: {
   icon: MemberIconName; title: string; description: string; sections?: readonly [string, string][];

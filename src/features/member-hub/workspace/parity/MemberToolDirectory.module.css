@@ -1,0 +1,27 @@
+.find {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: #415965;
+}
+.find label { flex: 1 1 min(27rem, 100%); max-width: 34rem; }
+.find > span { align-self: end; padding: 12px 0; font-size: .875rem; }
+.tool {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  min-height: 83px;
+  border: 1px solid #dce6eb;
+  border-radius: 10px;
+  background: #f9fbfc;
+  padding: 14px 12px;
+  color: var(--tenant-primary);
+  text-decoration: none;
+}
+.tool:hover { border-color: var(--tenant-primary); background: #fff; }
+.tool strong, .tool small { display: block; }
+.tool small { margin-top: 5px; color: #536873; font-size: .83rem; line-height: 1.4; }
+.icon { display: grid; place-items: center; width: 28px; min-height: 26px; }
+.icon svg { width: 19px; height: 19px; }

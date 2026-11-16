@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import Link from "next/link";
+import type { MemberSlug } from "@/domain/member-hub/types";
 import { MemberIcon, type MemberIconName } from "../../components/MemberIcon";
+import { useMemberReportingPeriod } from "../MemberWorkspaceShell";
+import { memberWorkspacePeriodHref } from "../member-workspace-navigation";
+import type { MemberModuleRoute } from "../member-workspace-routes";
 import {
   demoInventoryFeeBasisPoints, findStock, lotPrice, makeSampleStock, matchStatuses, recoveryStatuses,
   sampleMonths, stockCsv, stockKinds, stockQuantity, transferBalance, type MatchStatus, type RecoveryStatus,
@@ -9,7 +14,7 @@ import {
 } from "./sample-stock-model";
 import styles from "./MemberStockDesk.module.css";
 import { InventoryReview, type InventoryReviewRecord } from "./InventoryReview";
-import { usePreviewState } from "./ParityUI";
+import { styles as ui, usePreviewState, WorkspaceIntro } from "./ParityUI";
 
 const views = [
   { id: "parts-search", name: "Parts Search", icon: "opportunity", about: "Compare available quantities, branch locations and stock-class pricing before you source." },
@@ -81,8 +86,9 @@ function Stats({ values }: { values: readonly { label: string; total: string | n
   ))}</dl>;
 }
 
-function Panel({ heading, action, sub, children }: { heading: string; action?: ReactNode; sub?: ReactNode; children: ReactNode }) {
-  return <section className={styles.panel}><header className={styles.panelHeader}><div><h3>{heading}</h3>{sub && <p>{sub}</p>}</div>{action}</header>{children}</section>;
+function Panel({ heading, action, sub, children, topLevel }: { heading: string; action?: ReactNode; sub?: ReactNode; children: ReactNode; topLevel?: boolean }) {
+  const Heading = topLevel ? "h2" : "h3";
+  return <section className={styles.panel}><header className={styles.panelHeader}><div><Heading>{heading}</Heading>{sub && <p>{sub}</p>}</div>{action}</header>{children}</section>;
 }
 
 function Empty({ children }: { children: ReactNode }) {
@@ -114,13 +120,36 @@ function StockClass({ group, kind }: { group: StockGroup; kind: StockKind }) {
 
 type StockSample = ReturnType<typeof makeSampleStock>;
 
-function PartsSearch({ lots }: Pick<StockSample, "lots">) {
+function PartsSearch({ lots, topLevel }: Pick<StockSample, "lots"> & { topLevel?: boolean }) {
   const [query, setQuery] = useState("");
   const [owner, setOwner] = useState("");
   const [kind, setKind] = useState<"All" | StockKind>("All");
   const [available, setAvailable] = useState(false);
-  const groups = findStock(lots, query, owner, kind, available);
+  const [manufacturer, setManufacturer] = useState("");
+  const [location, setLocation] = useState("");
+  const [sort, setSort] = useState("part");
+  const groups = findStock(lots, query, owner, kind, available)
+    .filter(group => (!manufacturer || group.maker === manufacturer) && (!location || (group.location ?? "Unconfirmed") === location))
+    .sort((a, b) => {
+      const byPart = a.sku.localeCompare(b.sku) || a.owner.localeCompare(b.owner);
+      if (sort === "qty") {
+        const qty = (group: StockGroup) => stockKinds.reduce((sum, kind) => sum + stockQuantity(group, kind), 0);
+        return qty(b) - qty(a) || byPart;
+      }
+      if (sort === "price") {
+        const price = (group: StockGroup) => group.location ? Math.min(...group.lots.map(lotPrice)) : Infinity;
+        const left = price(a);
+        const right = price(b);
+        return left === right ? byPart : left - right;
+      }
+      return byPart;
+    });
   const owners = Array.from(new Set(lots.map((lot) => lot.owner))).sort();
+  const manufacturers = Array.from(new Set(lots.map(lot => lot.maker))).sort();
+  const locations = Array.from(new Set(lots.map(lot => lot.location ?? "Unconfirmed"))).sort();
+  const sampleParts = Array.from(new Set(lots.map(lot => lot.sku))).slice(0, 3);
+  const filtered = query || owner || kind !== "All" || available || manufacturer || location || sort !== "part";
+  const clear = () => { setQuery(""); setOwner(""); setKind("All"); setAvailable(false); setManufacturer(""); setLocation(""); setSort("part"); };
   const rows = groups.map((group) => [
     group.sku, group.description, group.maker, group.owner, group.location ?? "Confirm location", group.uom,
     ...stockKinds.flatMap((className) => [
@@ -129,14 +158,21 @@ function PartsSearch({ lots }: Pick<StockSample, "lots">) {
     ]),
     group.lots.reduce((total, lot) => total + (!lot.location ? lot.quantity : 0), 0),
   ]);
-  return <Panel heading="Stocking locations" sub={<span role="status">{groups.length} matching {groups.length === 1 ? "location row" : "location rows"}. USD per unit; flagged stock is not counted as available.</span>} action={
+  return <Panel heading="Stocking locations" topLevel={topLevel} sub={<span role="status">{groups.length} matching {groups.length === 1 ? "location row" : "location rows"}. USD per unit; flagged stock is not counted as available.</span>} action={
     <ExportButton name="parts-search" headers={["Part", "Description", "Manufacturer", "Stocking member", "Location", "UOM", "Standard confirmed quantity", "Standard unit prices", "Excess confirmed quantity", "Excess unit prices", "Dead confirmed quantity", "Dead unit prices", "Flagged, unconfirmed quantity"]} rows={rows} />
   }>
     <div className={styles.filters}>
       <label>Search parts<input type="search" placeholder="Part number, description, or maker" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
       <label>Stocking member<select value={owner} onChange={(event) => setOwner(event.target.value)}><option value="">All demo members</option>{owners.map((choice) => <option key={choice}>{choice}</option>)}</select></label>
       <label>Stock class<select value={kind} onChange={(event) => setKind(event.target.value as "All" | StockKind)}><option value="All">All stock classes</option>{stockKinds.map((choice) => <option key={choice}>{choice}</option>)}</select></label>
+      <label>Manufacturer<select value={manufacturer} onChange={event => setManufacturer(event.target.value)}><option value="">All manufacturers</option>{manufacturers.map(choice => <option key={choice}>{choice}</option>)}</select></label>
+      <label>Stocking branch<select value={location} onChange={event => setLocation(event.target.value)}><option value="">All branches</option>{locations.map(choice => <option key={choice}>{choice}</option>)}</select></label>
+      <label>Sort offers<select value={sort} onChange={event => setSort(event.target.value)}><option value="part">Part number</option><option value="qty">Most confirmed stock</option><option value="price">Lowest confirmed price</option></select></label>
       <label className={styles.check}><input type="checkbox" checked={available} onChange={(event) => setAvailable(event.target.checked)} /> Confirmed locations only</label>
+    </div>
+    <div className={ui.toolbar} aria-label="Sample part searches">
+      {!filtered && <><span className={ui.muted}>Try a sample part:</span>{sampleParts.map(sku => <button key={sku} className={ui.button} onClick={() => setQuery(sku)}>{sku}</button>)}</>}
+      {filtered && <button className={ui.button} onClick={clear}>Clear filters</button>}
     </div>
     {groups.length ? <Table caption="Illustrative stock offers by part and location" headers={["Part", "Stocking member", "Standard", "Excess", "Dead", "Offer details"]} rows={groups.map((group) => ({
       id: group.id,
@@ -149,8 +185,22 @@ function PartsSearch({ lots }: Pick<StockSample, "lots">) {
           <ul>{group.lots.map((lot) => <li key={lot.id}>{lot.kind}: {usd(lotPrice(lot))} / {lot.uom}{lot.kind === "Dead" ? ` (30% below ${usd(lot.replacementCents)} demo replacement cost)` : lot.kind === "Excess" ? " (demo replacement cost)" : ""}{!lot.location && " · unconfirmed, not available to promise"}</li>)}</ul>
         </details>,
       ],
-    }))} /> : <Empty>No stock matches these filters. Try a shorter description or clear the stocking member filter.</Empty>}
+    }))} /> : <Empty>No stock matches these filters. Clear the filters or try one of the sample parts.</Empty>}
   </Panel>;
+}
+
+export function MemberPartsSearch({ member, name }: { member: MemberSlug; name: string }) {
+  const { period } = useMemberReportingPeriod();
+  const sample = useMemo(() => makeSampleStock(member, name), [member, name]);
+  return <div className={ui.workspace} data-member-module="parts-search">
+    <WorkspaceIntro icon="opportunity" title="Parts Search" description="Search sample parts across stocking branches, compare Standard, Excess and Dead inventory, and export the results. This is not a live inventory or price quote." />
+    <PartsSearch lots={sample.lots} topLevel />
+    <div className={ui.toolbar}>
+      <Link className={ui.button} href={memberWorkspacePeriodHref(member, "shared-inventory", period)}>Shared Inventory</Link>
+      <Link className={ui.button} href={memberWorkspacePeriodHref(member, "buy-sell-opportunities", period)}>Buy/Sell Opportunities</Link>
+      <Link className={ui.button} href={memberWorkspacePeriodHref(member, "dead-excess-stock", period)}>Dead &amp; Excess Stock</Link>
+    </div>
+  </div>;
 }
 
 function SharedInventory({ transfers, member }: Pick<StockSample, "transfers"> & { member: string }) {
@@ -264,22 +314,23 @@ function Recovery({ lots, name, member }: Pick<StockSample, "lots"> & { name: st
   </>;
 }
 
-export function MemberStockDesk({ member, name }: { member: string; name: string }) {
-  const activeId = useSyncExternalStore(subscribeHash, hashView, defaultView);
+export function MemberStockDesk({ member, name, selected }: { member: string; name: string; selected?: MemberModuleRoute }) {
+  const hashId = useSyncExternalStore(subscribeHash, hashView, defaultView);
+  const activeId = selected?.section ?? hashId;
   const active = views.find((view) => view.id === activeId) ?? views[0];
   const sample = useMemo(() => makeSampleStock(member, name), [member, name]);
-  return <div className={styles.desk}>
+  return <div className={styles.desk} data-member-module={selected?.id}>
     <header className={styles.hero}>
       <span className={styles.kicker}><MemberIcon name="inventory" /> Network stock desk</span>
-      <h1>Inventory Exchange</h1>
-      <p>Find stock, see how it moves through the network, and act on buying, selling, and recovery opportunities.</p>
+      <h1>{selected?.label ?? "Inventory Exchange"}</h1>
+      <p>{selected?.description ?? "Find stock, see how it moves through the network, and act on buying, selling, and recovery opportunities."}</p>
       <p className={styles.boundary}><MemberIcon name="lock" /> {name} · Illustrative data only</p>
     </header>
-    <nav className={styles.navigation} aria-label="Inventory Exchange views">
+    {!selected && <nav className={styles.navigation} aria-label="Inventory Exchange views">
       {views.map((view) => <a key={view.id} href={`#${view.id}`} aria-current={view.id === active.id ? "location" : undefined}><MemberIcon name={view.icon} /> {view.name}</a>)}
-    </nav>
+    </nav>}
     <section className={styles.active} id={active.id} aria-label={active.name} key={`${member}:${active.id}`}>
-      <header className={styles.viewTitle}><h2>{active.name}</h2><p>{active.about}</p></header>
+      <header className={styles.viewTitle}><h2>{selected ? active.id === "shared-inventory" ? "Reconciliation overview" : active.id === "buy-sell" ? "Opportunity pipeline" : "Recovery overview" : active.name}</h2><p>{active.about}</p></header>
       {active.id === "parts-search" && <PartsSearch lots={sample.lots} />}
       {active.id === "shared-inventory" && <SharedInventory transfers={sample.transfers} member={member} />}
       {active.id === "buy-sell" && <BuySell matches={sample.matches} member={member} />}

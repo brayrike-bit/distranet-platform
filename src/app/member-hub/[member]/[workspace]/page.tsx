@@ -4,13 +4,15 @@ import {
   listMemberTenantSlugs,
   resolveMemberTenant,
 } from "@/brands/member-tenants";
-import { MemberWorkspacePage } from "@/features/member-hub/workspace/MemberWorkspacePage";
+import { MemberWorkspacePage, type ReportingDashboardId } from "@/features/member-hub/workspace/MemberWorkspacePage";
 import { MemberWorkspaceShell } from "@/features/member-hub/workspace/MemberWorkspaceShell";
 import { MemberAdminDesk } from "@/features/member-hub/workspace/parity/MemberAdminDesk";
 import { MemberNetworkPrograms } from "@/features/member-hub/workspace/parity/MemberNetworkPrograms";
 import { MemberPerformanceDesk } from "@/features/member-hub/workspace/parity/MemberPerformanceDesk";
 import { MemberResourceCenter } from "@/features/member-hub/workspace/parity/MemberResourceCenter";
-import { MemberStockDesk } from "@/features/member-hub/workspace/parity/MemberStockDesk";
+import { MemberStockDesk, MemberPartsSearch } from "@/features/member-hub/workspace/parity/MemberStockDesk";
+import { MemberEdiCompliance } from "@/features/member-hub/workspace/parity/MemberEdiCompliance";
+import { MemberToolDirectory } from "@/features/member-hub/workspace/parity/MemberToolDirectory";
 import {
   MEMBER_DASHBOARD_SEGMENTS,
   memberWorkspaceHref,
@@ -58,13 +60,25 @@ export default async function MemberDashboardRoute({
 
   const dashboard = route.id as MemberDashboardId;
   const content = (() => {
+    if ("surface" in route) {
+      switch (route.surface) {
+        case "trade": return <MemberStockDesk member={tenant.slug} name={tenant.displayName} selected={route} key={tenant.slug} />;
+        case "programs": return <MemberNetworkPrograms tenant={tenant} selected={route} key={tenant.slug} />;
+        case "performance": return <MemberPerformanceDesk member={tenant.slug} selected={route} key={tenant.slug} />;
+        case "resources": return <MemberResourceCenter member={tenant.slug} name={tenant.displayName} selected={route} key={tenant.slug} />;
+        case "admin": return <MemberAdminDesk member={tenant.slug} name={tenant.displayName} selected={route} key={tenant.slug} />;
+      }
+    }
     switch (dashboard) {
+      case "parts-search": return <MemberPartsSearch member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
+      case "edi-compliance": return <MemberEdiCompliance member={tenant.slug} key={tenant.slug} />;
+      case "tools": return <MemberToolDirectory member={tenant.slug} key={tenant.slug} />;
       case "trade-desk": return <MemberStockDesk member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
       case "programs": return <MemberNetworkPrograms tenant={tenant} key={tenant.slug} />;
       case "performance": return <MemberPerformanceDesk member={tenant.slug} key={tenant.slug} />;
-      case "resources": return <MemberResourceCenter member={tenant.slug} key={tenant.slug} />;
+      case "resources": return <MemberResourceCenter member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
       case "administration": return <MemberAdminDesk member={tenant.slug} name={tenant.displayName} key={tenant.slug} />;
-      default: return <MemberWorkspacePage tenant={tenant} workspace={dashboard} />;
+      default: return <MemberWorkspacePage tenant={tenant} workspace={dashboard as ReportingDashboardId} />;
     }
   })();
   return (

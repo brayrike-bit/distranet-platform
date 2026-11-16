@@ -1,14 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef } from "react";
 import type { MemberOverviewPeriod, MemberSlug } from "@/domain/member-hub/types";
-import { MemberIcon } from "../components/MemberIcon";
-import {
-  MEMBER_WORKSPACE_ROUTES,
-  type MemberWorkspaceId,
-} from "./member-workspace-routes";
-import { memberWorkspacePeriodHref } from "./member-workspace-navigation";
+import { MEMBER_TOOL_GROUPS, memberToolHref } from "./parity/member-tool-directory";
+import type { MemberWorkspaceId } from "./member-workspace-routes";
+import styles from "./MemberWorkspaceShell.module.css";
+
+const groups = MEMBER_TOOL_GROUPS;
 
 export function MemberWorkspaceMobileNav({
   tenantSlug,
@@ -19,37 +16,21 @@ export function MemberWorkspaceMobileNav({
   activeWorkspace: MemberWorkspaceId;
   period: MemberOverviewPeriod;
 }) {
-  const navigationRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const navigation = navigationRef.current;
-    const activeRoute = navigation?.querySelector<HTMLElement>(
-      '[aria-current="page"]',
-    );
-    if (!navigation || !activeRoute) return;
-
-    navigation.scrollTo({
-      left: Math.max(
-        0,
-        activeRoute.offsetLeft
-          - (navigation.clientWidth - activeRoute.clientWidth) / 2,
-      ),
-      behavior: "auto",
-    });
-  }, [activeWorkspace]);
-
-  return (
-    <nav ref={navigationRef} aria-label="Member workspace pages">
-      {MEMBER_WORKSPACE_ROUTES.map((route) => (
-        <Link
-          key={route.id}
-          href={memberWorkspacePeriodHref(tenantSlug, route.id, period)}
-          aria-current={route.id === activeWorkspace ? "page" : undefined}
-        >
-          <MemberIcon name={route.icon} />
-          <span>{route.shortLabel}</span>
-        </Link>
-      ))}
-    </nav>
-  );
+  const current = groups.flatMap(group => group.tools).find(tool => tool.route === activeWorkspace);
+  const currentHref = current ? memberToolHref(tenantSlug, period, current) : "";
+  return <form className={styles.mobileToolMenu} aria-label="Member workspace pages" onSubmit={event => {
+    event.preventDefault();
+    const item = new FormData(event.currentTarget).get("tool");
+    const target = groups.flatMap(group => group.tools).find(tool => memberToolHref(tenantSlug, period, tool) === item);
+    if (target) window.location.assign(memberToolHref(tenantSlug, period, target));
+  }}>
+    <label htmlFor="member-workspace-tool">Member tools</label>
+    <select id="member-workspace-tool" name="tool" key={currentHref} defaultValue={currentHref} required>
+      <option value="">Choose a member tool</option>
+      {groups.map(group => <optgroup key={group.title} label={group.title}>
+        {group.tools.map(tool => <option key={tool.label} value={memberToolHref(tenantSlug, period, tool)}>{tool.label}</option>)}
+      </optgroup>)}
+    </select>
+    <button type="submit">Open</button>
+  </form>;
 }
