@@ -15,6 +15,7 @@ import {
 } from "./member-workspace-routes";
 import { memberDirectoryPeriodHref, memberWorkspacePeriodHref } from "./member-workspace-navigation";
 import { parseDemonstrationPeriod, withDemonstrationPeriod } from "./demonstration-report-export";
+import { MEMBER_TOOL_GROUPS, memberToolHref } from "./parity/member-tool-directory";
 import styles from "./MemberWorkspaceShell.module.css";
 
 type ReportingPeriodContext = {
@@ -44,13 +45,6 @@ type WorkspaceShellProps = {
   children: ReactNode;
 };
 
-const workspaceGroups = [
-  "Workspace",
-  "Business",
-  "Intelligence",
-  "Administration",
-] as const;
-
 export function MemberWorkspaceShell(props: WorkspaceShellProps) {
   return (
     // Keep the existing illustrative YTD layout in prerendered HTML. The URL
@@ -79,7 +73,7 @@ function WorkspaceShellFrame({
   const sidebarNavigation = useRef<HTMLElement>(null);
   useEffect(() => {
     const navigation = sidebarNavigation.current;
-    const active = navigation?.querySelector('[aria-current="page"]');
+    const active = navigation?.querySelector('[aria-current]');
     if (!navigation || !active || navigation.clientHeight === 0) return;
     const menuBounds = navigation.getBoundingClientRect();
     const routeBounds = active.getBoundingClientRect();
@@ -105,24 +99,15 @@ function WorkspaceShellFrame({
         </div>
 
         <nav ref={sidebarNavigation} className={styles.navigation} aria-label="Member workspace pages">
-          {workspaceGroups.map((group) => (
-            <div className={styles.navigationGroup} key={group}>
-              <p>{group}</p>
-              {MEMBER_WORKSPACE_ROUTES.filter((route) => route.group === group).map((route) => {
-                const isActive = route.id === activeWorkspace;
-                return (
-                  <Link
-                    key={route.id}
-                    href={memberWorkspacePeriodHref(tenant.slug, route.id, period)}
-                    aria-current={isActive ? "page" : undefined}
-                    className={isActive ? styles.activeRoute : undefined}
-                  >
-                    <MemberIcon name={route.icon} />
-                    <span>
-                      <strong>{route.label}</strong>
-                    </span>
-                  </Link>
-                );
+          {MEMBER_TOOL_GROUPS.map((group) => (
+            <div className={styles.navigationGroup} key={group.title}>
+              <p>{group.title}</p>
+              {group.tools.map(tool => {
+                const isActive = tool.route === activeWorkspace;
+                const href = memberToolHref(tenant.slug, period, tool);
+                const content = <><MemberIcon name={tool.icon} /><span><strong>{tool.label}</strong></span></>;
+                const className = isActive ? styles.activeRoute : undefined;
+                return <Link key={tool.label} href={href} aria-current={isActive ? "page" : undefined} className={className} prefetch={false}>{content}</Link>;
               })}
             </div>
           ))}
@@ -177,6 +162,14 @@ function WorkspaceShellFrame({
 
         <main id="main-content" className={styles.content} tabIndex={-1}>
           <div className={styles.demoNotice}><span><i />Demonstration data</span><p>Illustrative figures for workspace review. Live member reporting is not connected.</p><Link href={memberDirectoryPeriodHref(period)}>All members <span aria-hidden="true">↗</span></Link></div>
+          <nav className={styles.quickTools} aria-label="Member tool shortcuts">
+            {MEMBER_WORKSPACE_ROUTES.filter(route => route.id === "parts-search" || route.id === "edi-compliance" || route.id === "tools").map(route => (
+              <Link key={route.id} href={memberWorkspacePeriodHref(tenant.slug, route.id, period)}
+                aria-current={route.id === activeWorkspace ? "page" : undefined} prefetch={false}>
+                <MemberIcon name={route.icon} />{route.label}
+              </Link>
+            ))}
+          </nav>
           {children}
         </main>
 

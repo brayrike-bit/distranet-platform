@@ -73,6 +73,7 @@
 .desk :where(a, button, input, select, summary):focus-visible { outline: 2px solid var(--stock-accent); outline-offset: 2px; }
 
 .active { display: grid; min-width: 0; gap: 16px; scroll-margin-top: 80px; }
+@media (max-width: 1020px) { .active { scroll-margin-top: 16rem; } }
 .viewTitle { padding: 4px 2px; }
 .viewTitle h2 { margin: 0; font-size: clamp(1.45rem, 3vw, 2.1rem); line-height: 1.14; letter-spacing: -.025em; }
 .viewTitle p, .panelHeader p { margin: 6px 0 0; color: var(--stock-muted); line-height: 1.55; }
@@ -80,7 +81,7 @@
 .panel, .stats > div { min-width: 0; border: 1px solid var(--stock-border); border-radius: 14px; background: var(--stock-surface); box-shadow: 0 8px 24px rgba(20, 43, 57, .045); }
 .panelHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 20px; flex-wrap: wrap; padding: 17px clamp(13px, 2.2vw, 22px); }
 .panelHeader > div { flex: 1 1 245px; min-width: 0; }
-.panelHeader h3 { margin: 0; font-size: 1.2rem; font-weight: 680; }
+.panelHeader :is(h2, h3) { margin: 0; font-size: 1.2rem; font-weight: 680; }
 .panelHeader p { max-width: 70ch; font-size: .9rem; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 175px), 1fr)); gap: 12px; margin: 0; }
 .stats > div { padding: 16px; border-top: 2px solid var(--stock-accent); }

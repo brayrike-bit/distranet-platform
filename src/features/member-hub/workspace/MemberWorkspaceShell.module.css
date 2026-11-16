@@ -39,6 +39,30 @@
 .demoNotice p { margin: 0; flex: 1; min-width: min(180px, 100%); }
 .demoNotice a { display: inline-flex; align-items: center; gap: 15px; color: var(--tenant-primary); min-height: 28px; font-weight: 650; }
 .demoNotice a:focus-visible,.memberSwitcher select:focus-visible,.mobileSwitcher select:focus-visible { outline: 3px solid var(--tenant-primary); outline-offset: 3px; }
+.quickTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -9px 0 20px;
+}
+.quickTools a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  border: 1px solid #d6e0e6;
+  border-radius: 8px;
+  padding: 8px 11px;
+  background: #fff;
+  color: var(--tenant-primary);
+  font-size: .82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.quickTools svg { width: 17px; height: 17px; flex: none; }
+.quickTools a:hover { border-color: var(--tenant-primary); }
+.quickTools a[aria-current="page"] { color: #fff; border-color: var(--tenant-primary); background: var(--tenant-primary); }
+.quickTools a:focus-visible { outline: 2px solid var(--tenant-primary); outline-offset: 3px; }
 
 .memberBrand p {
   margin: 12px 0 0;
@@ -389,40 +413,36 @@
     line-height: 1.2;
   }
 
-  .mobileHeader nav {
-    display: flex;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: thin;
+  .mobileToolMenu {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 8px;
     border-top: 1px solid #edf1f3;
+    padding: 8px 16px 10px;
   }
-
-  .mobileHeader nav a {
-    min-height: 52px;
-    min-width: 116px;
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 4px;
-    border-bottom: 3px solid transparent;
+  .mobileToolMenu label {
+    grid-column: 1 / -1;
     color: var(--muted-caption);
-    text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: .8rem;
+    font-weight: 720;
   }
-
-  .mobileHeader nav a[aria-current="page"] {
-    color: var(--tenant-primary);
-    border-bottom-color: var(--tenant-primary);
-    background: color-mix(in srgb, var(--tenant-primary) 5%, #fff);
+  .mobileToolMenu :is(select, button) {
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid #cbd7df;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--tenant-ink);
+    font: inherit;
+    padding: 8px 12px;
   }
-
-  .mobileHeader nav svg {
-    width: 16px;
-    height: 16px;
+  .mobileToolMenu button {
+    color: #fff;
+    border-color: var(--tenant-primary);
+    background: var(--tenant-primary);
+    cursor: pointer;
   }
+  .mobileToolMenu :is(select, button):focus-visible { outline: 2px solid var(--tenant-primary); outline-offset: 2px; }
 
   .content {
     min-height: calc(100svh - 156px);
@@ -511,17 +531,6 @@
 }
 
 @media (max-width: 700px) {
-  .mobileHeader nav {
-    scroll-snap-type: x proximity;
-  }
-
-  .mobileHeader nav a {
-    min-width: 104px;
-    min-height: 48px;
-    border-bottom-width: 2px;
-    scroll-snap-align: start;
-  }
-
   .content {
     padding: 28px 16px 52px;
   }

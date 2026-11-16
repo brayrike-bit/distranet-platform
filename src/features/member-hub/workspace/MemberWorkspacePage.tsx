@@ -16,7 +16,7 @@ import type {
   MemberTenantBrand,
 } from "@/domain/member-hub/types";
 import { MemberIcon, type MemberIconName } from "../components/MemberIcon";
-import type { MemberDashboardId } from "./member-workspace-routes";
+import type { MemberDashboardId, MemberModuleId } from "./member-workspace-routes";
 import styles from "./MemberWorkspacePage.module.css";
 import { memberDataForPeriod } from "../member-demo-data";
 import { createDemonstrationReport, REPORT_PERIODS } from "./demonstration-report-export";
@@ -30,7 +30,7 @@ const currency = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 const wholeNumber = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-type ReportingDashboardId = Exclude<MemberDashboardId, "trade-desk" | "programs" | "performance" | "resources" | "administration">;
+export type ReportingDashboardId = Exclude<MemberDashboardId, MemberModuleId | "trade-desk" | "programs" | "performance" | "resources" | "administration" | "parts-search" | "edi-compliance" | "tools">;
 
 const pageCopy: Record<
   ReportingDashboardId,
@@ -1151,9 +1151,9 @@ function ServicesDashboard({ tenant }: { tenant: MemberTenantBrand }) {
 
       <Panel eyebrow="Workspace tools" title="Manage your team and files">
         <div className={styles.connectionGrid}>
-          <article><MemberIcon name="locations" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "administration", period) + "#locations"}>Open branch management</Link></strong><p>Review sample shipping and status records.</p></article>
-          <article><MemberIcon name="governance" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "administration", period) + "#users"}>Open user administration</Link></strong><p>Review sample accounts and section permissions.</p></article>
-          <article><MemberIcon name="download" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "resources", period) + "#downloads"}>Open document catalog</Link></strong><p>Download sample files and verify local import readiness.</p></article>
+          <article><MemberIcon name="locations" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "locations", period)}>Open branch management</Link></strong><p>Review sample shipping and status records.</p></article>
+          <article><MemberIcon name="governance" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "manage-users", period)}>Open user administration</Link></strong><p>Review sample accounts and section permissions.</p></article>
+          <article><MemberIcon name="download" /><strong><Link href={memberWorkspacePeriodHref(tenant.slug, "downloads", period)}>Open document catalog</Link></strong><p>Download sample files and verify local import readiness.</p></article>
         </div>
       </Panel>
 
